@@ -20,7 +20,7 @@
 
 
 #include "Poco/XML/XML.h"
-#if defined(POCO_UNBUNDLED)
+#if defined(POCO_UNBUNDLED_EXPAT)
 #include <expat.h>
 #else
 #include "Poco/XML/expat.h"
