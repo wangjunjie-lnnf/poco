@@ -6,7 +6,7 @@ POCO_SOURCES_AUTO( SQLITE_SRCS ${SRCS_G})
 file(GLOB_RECURSE HDRS_G "include/*.h" )
 POCO_HEADERS_AUTO( SQLITE_SRCS ${HDRS_G})
 
-if (POCO_UNBUNDLED)
+if (POCO_UNBUNDLED_SQLITE)
 	find_package(SQLite3 REQUIRED)
 else()
     # sqlite3
@@ -42,9 +42,9 @@ target_include_directories(SQLSQLite
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
     )
 
-if(POCO_UNBUNDLED)
+if(POCO_UNBUNDLED_SQLITE)
 	target_link_libraries(SQLSQLite PUBLIC SQLite::SQLite3)
-	target_compile_definitions(SQLSQLite PUBLIC POCO_UNBUNDLED)
+    target_compile_definitions(SQLSQLite PUBLIC POCO_UNBUNDLED_SQLITE)
 else()
 	if(WINCE)
 	    target_compile_definitions(SQLSQLite PRIVATE SQLITE_MSVC_LOCALTIME_API)

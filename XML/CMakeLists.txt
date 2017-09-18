@@ -13,7 +13,11 @@ POCO_HEADERS_AUTO( SRCS ${HDRS_G})
 
 # If POCO_UNBUNDLED is enabled we try to find the required packages
 # The configuration will fail if the packages are not found
-if (POCO_UNBUNDLED)
+
+option(POCO_UNBUNDLED_EXPAT
+  "Set to OFF|ON (default is OFF) to control linking expat as external" ${POCO_UNBUNDLED})
+
+if (POCO_UNBUNDLED_EXPAT)
     find_package(EXPAT REQUIRED)
 else()
     POCO_SOURCES( SRCS expat
@@ -23,7 +27,7 @@ else()
     src/xmltok_impl.c
     src/xmltok_ns.c
     )
-endif (POCO_UNBUNDLED)
+endif (POCO_UNBUNDLED_EXPAT)
 
 # Version Resource
 if(MSVC AND NOT POCO_STATIC)
