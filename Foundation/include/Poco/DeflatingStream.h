@@ -22,7 +22,7 @@
 #include "Poco/BufferedStreamBuf.h"
 #include <istream>
 #include <ostream>
-#if defined(POCO_UNBUNDLED)
+#if defined(POCO_UNBUNDLED_ZLIB)
 #include <zlib.h>
 #else
 #include "Poco/zlib.h"
@@ -73,7 +73,7 @@ public:
 		/// Destroys the DeflatingStreamBuf.
 		
 	int close();
-		/// Finishes up the stream. 
+		/// Finishes up the stream.
 		///
 		/// Must be called when deflating to an output stream.
 
@@ -83,7 +83,7 @@ protected:
 	virtual int sync();
 
 private:
-	enum 
+	enum
 	{
 		STREAM_BUFFER_SIZE  = 1024,
 		DEFLATE_BUFFER_SIZE = 32768
@@ -165,7 +165,7 @@ public:
 		/// Destroys the DeflatingOutputStream.
 		
 	int close();
-		/// Finishes up the stream. 
+		/// Finishes up the stream.
 		///
 		/// Must be called when deflating to an output stream.
 

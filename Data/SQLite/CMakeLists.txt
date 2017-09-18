@@ -15,7 +15,10 @@ if(MSVC AND NOT POCO_STATIC)
     list(APPEND SQLITE_SRCS ${CMAKE_SOURCE_DIR}/DLLVersion.rc)
 endif()
 
-if (POCO_UNBUNDLED)
+option(POCO_UNBUNDLED_SQLITE
+  "Set to OFF|ON (default is OFF) to control linking sqlite as external" ${POCO_UNBUNDLED})
+
+if (POCO_UNBUNDLED_SQLITE)
     find_package(SQLite3)
     set(DATASQLITELIBS ${SQLITE3_LIBRARIES})
     include_directories("${SQLITE3_INCLUDE_DIRS}")
