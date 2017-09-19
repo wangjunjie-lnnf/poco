@@ -18,6 +18,13 @@ if(WIN32)
     endif()    
 endif(WIN32)
 
+if(NOT WIN32)
+    include(cmake/test_anl.cmake)
+    if (HAVE_GETADDRINFO_A)
+       set(SYSLIBS ${SYSLIBS} "${ANL_LIB}")
+    endif()
+endif()
+
 add_library( "${LIBNAME}" ${LIB_MODE} ${SRCS} )
 add_library( "${POCO_LIBNAME}" ALIAS "${LIBNAME}")
 set_target_properties( "${LIBNAME}"
