@@ -239,6 +239,9 @@ endmacro()
 #           target_name             the name of the target. e.g. Foundation for PocoFoundation
 #    Example: POCO_INSTALL(Foundation)
 macro(POCO_INSTALL target_name)
+
+return() # no need in clickhouse
+
 install(
     DIRECTORY include/Poco
     DESTINATION include
