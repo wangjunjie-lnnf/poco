@@ -196,6 +196,9 @@ endmacro()
 #           target_name             the name of the target. e.g. Foundation for PocoFoundation
 #    Example: POCO_GENERATE_PACKAGE(Foundation)
 macro(POCO_GENERATE_PACKAGE target_name)
+
+if(0) # no need in clickhouse
+
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
   "${CMAKE_BINARY_DIR}/${PROJECT_NAME}/${PROJECT_NAME}${target_name}ConfigVersion.cmake"
@@ -228,6 +231,8 @@ install(
     COMPONENT Devel
     )
 
+endif()
+
 endmacro()
 
 #===============================================================================
@@ -240,7 +245,7 @@ endmacro()
 #    Example: POCO_INSTALL(Foundation)
 macro(POCO_INSTALL target_name)
 
-return() # no need in clickhouse
+if(0) # no need in clickhouse
 
 install(
     DIRECTORY include/Poco
@@ -262,6 +267,8 @@ if (MSVC)
   POCO_INSTALL_PDB(${target_name})
 endif()
   
+endif()
+
 endmacro()
 
 #===============================================================================
