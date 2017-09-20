@@ -84,7 +84,7 @@ option(POCO_UNBUNDLED_ZLIB
   "Set to OFF|ON (default is OFF) to control linking zlib as external" ${POCO_UNBUNDLED})
 
 if (POCO_UNBUNDLED_ZLIB)
-	find_package(ZLIB REQUIRED)
+	find_package(ZLIB)
 	set(SYSLIBS ${SYSLIBS} ${ZLIB_LIBRARIES})
 	include_directories(${ZLIB_INCLUDE_DIRS})
 
