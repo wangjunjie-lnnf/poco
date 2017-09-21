@@ -86,9 +86,6 @@ option(POCO_UNBUNDLED_ZLIB
 if (POCO_UNBUNDLED_ZLIB)
 	find_package(ZLIB)
 	set(SYSLIBS ${SYSLIBS} ${ZLIB_LIBRARIES})
-	include_directories(${ZLIB_INCLUDE_DIRS})
-
-	add_definitions(-DPOCO_UNBUNDLED_ZLIB)
 else()
 
 	# zlib
@@ -189,6 +186,11 @@ target_include_directories( "${LIBNAME}"
 	PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
 	)
 target_compile_definitions("${LIBNAME}" PUBLIC ${LIB_MODE_DEFINITIONS})
+
+if (POCO_UNBUNDLED_ZLIB)
+    target_include_directories("${LIBNAME}" PUBLIC ${ZLIB_INCLUDE_DIRS})
+    target_compile_definitions("${LIBNAME}" PUBLIC POCO_UNBUNDLED_ZLIB)
+endif ()
 
 POCO_INSTALL("${LIBNAME}")
 POCO_GENERATE_PACKAGE("${LIBNAME}")
