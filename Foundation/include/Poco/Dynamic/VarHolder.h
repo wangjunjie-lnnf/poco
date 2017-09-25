@@ -401,7 +401,7 @@ private:
 	void checkUpperLimit(const F& from) const
 	{
 		if ((sizeof(T) < sizeof(F)) &&
-			(from > static_cast<F>(std::numeric_limits<T>::max())))
+			(static_cast<F>(from) > static_cast<F>(std::numeric_limits<T>::max())))
 		{
 			throw RangeException("Value too large.");
 		}
