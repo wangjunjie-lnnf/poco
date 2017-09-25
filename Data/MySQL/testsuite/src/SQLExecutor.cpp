@@ -29,9 +29,7 @@
 #include "Poco/Data/MySQL/Connector.h"
 #include "Poco/Data/MySQL/MySQLException.h"
 
-#if __cplusplus >= 201103L
 #include <tuple>
-#endif
 
 #if POCO_MSVS_VERSION == 2015
 #define HAVE_STRUCT_TIMESPEC
@@ -568,7 +566,7 @@ void SQLExecutor::any()
 	Any s = std::string("42");
 	Any date = Date(DateTime());
 	Any t = Time(DateTime());
-	Any dateTime = DateTime(2017, 9, 2, 18, 49, 15);
+	Any dateTime = DateTime(2017, 9, 2, 18, 49, 15, 227, 987);
 	Any e;
 	assert (e.empty());
 
@@ -594,7 +592,7 @@ void SQLExecutor::any()
 	Any s2 = std::string("");
 	Any dateR = Date();
 	Any tR = Time();
-	Any dateTimeR = DateTime(2010, 5, 25);
+	Any dateTimeR = DateTime();
 	e = 1;
 	assert (!e.empty());
 
@@ -655,7 +653,7 @@ void SQLExecutor::dynamicAny()
 	DynamicAny s2 = std::string("");
 	DynamicAny dateR = Date();
 	DynamicAny tR = Time();
-	DynamicAny dateTimeR = DateTime(2017, 9, 2);
+	DynamicAny dateTimeR = DateTime();
 	e = 1;
 	assert (!e.isEmpty());
 
@@ -674,7 +672,7 @@ void SQLExecutor::dynamicAny()
 	assert ("42" == s2);
 	assert (date == dateR);
 	assert (t == tR);
-	assert (dateTimeR == dateTime);
+	assert (dateTimeR.convert<DateTime>() == dateTime.convert<DateTime>());
 	assert (e.isEmpty());
 }
 
@@ -1397,7 +1395,7 @@ void SQLExecutor::dateTime()
 	std::string lastName("Bart");
 	std::string firstName("Simpson");
 	std::string address("Springfield");
-	DateTime birthday(1980, 4, 1, 5, 45, 12);
+	DateTime birthday(1980, 4, 1, 5, 45, 12, 354, 879);
 	
 	int count = 0;
 	try { *_pSession << "INSERT INTO Person VALUES (?,?,?,?)", use(lastName), use(firstName), use(address), use(birthday), now; }
@@ -1622,7 +1620,6 @@ void SQLExecutor::tupleVector()
 	poco_assert (ret == v);
 }
 
-#if __cplusplus >= 201103L
 
 void SQLExecutor::stdTuples()
 {
@@ -1671,8 +1668,6 @@ void SQLExecutor::stdTupleVector()
 	catch(StatementException& se){ std::cout << se.displayText() << std::endl; fail (funct); }
 	poco_assert (ret == v);
 }
-
-#endif //__cplusplus >= 201103L
 
 
 void SQLExecutor::internalExtraction()

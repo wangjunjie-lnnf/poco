@@ -72,6 +72,10 @@ environment:
       vsver: 140
       linkmode: shared
 
+    - builder: msbuild
+      vsver: 150
+      linkmode: shared
+
 #    - builder: msbuild
 #      vsver: 140
 #      linkmode: static_md
@@ -80,9 +84,9 @@ environment:
 #      vsver: 140
 #      linkmode: static_mt
 
-    - builder: msbuild
-      vsver: 150
-      linkmode: shared
+#    - builder: msbuild
+#      vsver: 150
+#      linkmode: shared
 
 #    - builder: msbuild
 #      vsver: 150
@@ -100,12 +104,11 @@ environment:
 
     - builder: cygwin
 
-
-     
 matrix:
   fast_finish: true
 
 install:
+  - git submodule update --init --recursive
 # -------------------------------------------------------------------------------------------
 # VS2017 setup. VS2017 does not provide VS150COMNTOOLS. 
 # See https://blogs.msdn.microsoft.com/vcblog/2017/03/06/finding-the-visual-c-compiler-tools-in-visual-studio-2017/
@@ -139,6 +142,7 @@ install:
         {
           $env:PATH = "c:\cygwin64\bin;" + $env:PATH
         }
+        g++ --version
       }
   - uname -a
   - cat /proc/cpuinfo
@@ -471,8 +475,8 @@ before_test:
       Write-Host -ForegroundColor Yellow $line;
       foreach($t in $CPPUNIT_IGNORE.split(",")) { Write-Host -ForegroundColor Yellow $t.trim() }      
       Write-Host -ForegroundColor Yellow $line;
-      
-      
+
+
 after_test:
 
 
