@@ -86,6 +86,9 @@ option(POCO_UNBUNDLED_ZLIB
 if (POCO_UNBUNDLED_ZLIB)
 	find_package(ZLIB)
 	set(SYSLIBS ${SYSLIBS} ${ZLIB_LIBRARIES})
+	include_directories(${ZLIB_INCLUDE_DIRS})
+
+	add_definitions(-DPOCO_UNBUNDLED_ZLIB)
 else()
 
 	# zlib
