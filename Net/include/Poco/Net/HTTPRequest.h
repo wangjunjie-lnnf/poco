@@ -130,7 +130,11 @@ public:
 		/// Writes the HTTP request to the given
 		/// output stream.
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Woverloaded-virtual"
 	void read(std::istream& istr);
+#pragma clang diagnostic pop
+
 		/// Reads the HTTP request from the
 		/// given input stream.
 		

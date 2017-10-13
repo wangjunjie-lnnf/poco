@@ -186,7 +186,10 @@ public:
 		/// Writes the HTTP response to the given
 		/// output stream, but do not finish with \r\n delimiter.
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Woverloaded-virtual"
 	void read(std::istream& istr);
+#pragma clang diagnostic pop
 		/// Reads the HTTP response from the
 		/// given input stream.
 		///
