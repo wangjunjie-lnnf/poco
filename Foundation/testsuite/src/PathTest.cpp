@@ -17,14 +17,12 @@
 #include "Poco/Environment.h"
 #include <iostream>
 
-#if defined(POCO_OS_FAMILY_WINDOWS) && defined(POCO_WIN32_UTF8)
+#if defined(POCO_OS_FAMILY_WINDOWS)
 #if defined(_WIN32_WCE)
 #include "Poco/Path_WINCE.h"
 #else
-#include "Poco/Path_WIN32U.h"
-#endif
-#elif defined(POCO_OS_FAMILY_WINDOWS)
 #include "Poco/Path_WIN32.h"
+#endif
 #endif
 
 using Poco::Path;
@@ -1551,7 +1549,7 @@ void PathTest::testExpand()
 #if defined(POCO_OS_FAMILY_UNIX)
 	std::string s = Path::expand("~/.profile");
 	assert (s == Path::expand("$HOME/.profile"));
-	assert (s == Environment::get("HOME") + "/.profile" || 
+	assert (s == Environment::get("HOME") + "/.profile" ||
 	        s == Environment::get("HOME") + "//.profile");
 	Path p(s);
 	s = Path::expand("$HOME/.profile");

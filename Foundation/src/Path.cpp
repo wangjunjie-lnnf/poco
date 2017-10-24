@@ -16,10 +16,8 @@
 #include "Poco/File.h"
 #include "Poco/Exception.h"
 #include "Poco/StringTokenizer.h"
-#if defined(_WIN32) && defined(POCO_WIN32_UTF8)
 #include "Poco/UnicodeConverter.h"
 #include "Poco/Buffer.h"
-#endif
 #include <algorithm>
 
 
@@ -27,14 +25,12 @@
 #include "Path_VMS.cpp"
 #elif defined(POCO_OS_FAMILY_UNIX)
 #include "Path_UNIX.cpp"
-#elif defined(POCO_OS_FAMILY_WINDOWS) && defined(POCO_WIN32_UTF8)
+#elif defined(POCO_OS_FAMILY_WINDOWS)
 #if defined(_WIN32_WCE)
 #include "Path_WINCE.cpp"
 #else
-#include "Path_WIN32U.cpp"
-#endif
-#elif defined(POCO_OS_FAMILY_WINDOWS)
 #include "Path_WIN32.cpp"
+#endif
 #endif
 
 
@@ -79,8 +75,8 @@ Path::Path(const char* path, Style style)
 }
 
 
-Path::Path(const Path& path): 
-	_node(path._node), 
+Path::Path(const Path& path):
+	_node(path._node),
 	_device(path._device),
 	_name(path._name),
 	_version(path._version),
@@ -91,7 +87,7 @@ Path::Path(const Path& path):
 
 
 Path::Path(const Path& rParent, const std::string& fileName):
-	_node(rParent._node), 
+	_node(rParent._node),
 	_device(rParent._device),
 	_name(rParent._name),
 	_version(rParent._version),
@@ -105,7 +101,7 @@ Path::Path(const Path& rParent, const std::string& fileName):
 
 
 Path::Path(const Path& rParent, const char* fileName):
-	_node(rParent._node), 
+	_node(rParent._node),
 	_device(rParent._device),
 	_name(rParent._name),
 	_version(rParent._version),
@@ -118,7 +114,7 @@ Path::Path(const Path& rParent, const char* fileName):
 
 
 Path::Path(const Path& rParent, const Path& relative):
-	_node(rParent._node), 
+	_node(rParent._node),
 	_device(rParent._device),
 	_name(rParent._name),
 	_version(rParent._version),
@@ -716,7 +712,7 @@ void Path::parseUnix(const std::string& path)
 
 	if (it != end)
 	{
-		if (*it == '/') 
+		if (*it == '/')
 		{
 			_absolute = true; ++it;
 		}
@@ -872,7 +868,7 @@ void Path::parseVMS(const std::string& path)
 								{
 									if (_dirs.empty() || _dirs.back() == "..")
 										_dirs.push_back("..");
-									else 
+									else
 										_dirs.pop_back();
 								}
 								else _dirs.push_back(name);
@@ -943,7 +939,7 @@ void Path::parseGuess(const std::string& path)
 			case '\\': hasBackslash = true; break;
 			case '/':  hasSlash = true; break;
 			case '[':  hasOpenBracket = true;
-			case ']':  hasClosBracket = hasOpenBracket; 
+			case ']':  hasClosBracket = hasOpenBracket;
 			case ';':  semiIt = it; break;
 			}
 		}
@@ -1072,7 +1068,7 @@ std::string Path::buildVMS() const
 
 std::string Path::transcode(const std::string& path)
 {
-#if defined(_WIN32) && defined(POCO_WIN32_UTF8)
+#if defined(_WIN32)
 	std::wstring uniPath;
 	UnicodeConverter::toUTF16(path, uniPath);
 	DWORD len = WideCharToMultiByte(CP_ACP, WC_NO_BEST_FIT_CHARS, uniPath.c_str(), static_cast<int>(uniPath.length()), NULL, 0, NULL, NULL);

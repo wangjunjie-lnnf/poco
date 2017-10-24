@@ -17,14 +17,12 @@
 #include "Poco/DirectoryIterator.h"
 
 
-#if defined(POCO_OS_FAMILY_WINDOWS) && defined(POCO_WIN32_UTF8)
+#if defined(POCO_OS_FAMILY_WINDOWS)
 #if defined(_WIN32_WCE)
 #include "File_WINCE.cpp"
 #else
-#include "File_WIN32U.cpp"
-#endif
-#elif defined(POCO_OS_FAMILY_WINDOWS)
 #include "File_WIN32.cpp"
+#endif
 #elif defined(POCO_VXWORKS)
 #include "File_VX.cpp"
 #elif defined(POCO_OS_FAMILY_UNIX)
@@ -275,7 +273,7 @@ void File::remove(bool recursive)
 			it->remove(true);
 		}
 
-		// Note: On Windows, removing a directory may not succeed at first 
+		// Note: On Windows, removing a directory may not succeed at first
 		// try because deleting files is not a synchronous operation. Files
 		// are merely marked as deleted, and actually removed at a later time.
 		//
@@ -287,7 +285,7 @@ void File::remove(bool recursive)
 		int retry = 8;
 		long sleep = 10;
 		while (retry > 0)
-		{ 
+		{
 			try
 			{
 				removeImpl();
