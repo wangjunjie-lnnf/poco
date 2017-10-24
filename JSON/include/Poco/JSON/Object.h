@@ -40,21 +40,21 @@ namespace JSON {
 
 class JSON_API Object
 	/// Represents a JSON object. Object provides a representation
-	/// based on shared pointers and optimized for performance. It is possible to 
+	/// based on shared pointers and optimized for performance. It is possible to
 	/// convert Object to DynamicStruct. Conversion requires copying and therefore
 	/// has performance penalty; the benefit is in improved syntax, eg:
-	/// 
+	///
 	///    std::string json = "{ \"test\" : { \"property\" : \"value\" } }";
 	///    Parser parser;
 	///    Var result = parser.parse(json);
-	/// 
+	///
 	///    // use pointers to avoid copying
 	///    Object::Ptr object = result.extract<Object::Ptr>();
 	///    Var test = object->get("test"); // holds { "property" : "value" }
 	///    Object::Ptr subObject = test.extract<Object::Ptr>();
 	///    test = subObject->get("property");
 	///    std::string val = test.toString(); // val holds "value"
-	/// 
+	///
 	///    // copy/convert to Poco::DynamicStruct
 	///    Poco::DynamicStruct ds = *object;
 	///    val = ds["test"]["property"]; // val holds "value"
@@ -70,7 +70,7 @@ public:
 	explicit Object(bool preserveInsertionOrder = false);
 		/// Creates an empty Object.
 		///
-		/// If preserveInsertionOrder, object will preserve the items insertion 
+		/// If preserveInsertionOrder, object will preserve the items insertion
 		/// order. Otherwise, items will be sorted by keys.
 
 	Object(const Object& copy);
@@ -79,8 +79,17 @@ public:
 		/// Struct is not copied to keep the operation as
 		/// efficient as possible (when needed, it will be generated upon request).
 
+	Object(Object&& other);
+		/// Move constructor
+
 	virtual ~Object();
 		/// Destroys the Object.
+
+	Object &operator =(const Object &other);
+		// Assignment operator
+
+	Object &operator =(Object &&other);
+		// Move asignment operator
 
 	Iterator begin()
 	{
@@ -132,7 +141,7 @@ public:
 	Poco::Nullable<T> getNullableValue(const std::string& key) const
 		/// Retrieves the property with the given name and will
 		/// try to convert the value to the given template type.
-		/// 
+		///
 		/// The convert<T> method of Var is called
 		/// which can also throw exceptions for invalid values.
 		/// Note: This will not work for an array or an object.
@@ -194,9 +203,9 @@ public:
 		/// Sets a new value.
 
 	void stringify(std::ostream& out, unsigned int indent = 0, int step = -1) const;
-		/// Prints the object to out stream. 
+		/// Prints the object to out stream.
 		///
-		/// When indent is 0, the object will be printed on a single 
+		/// When indent is 0, the object will be printed on a single
 		/// line without indentation.
 
 	void remove(const std::string& key);
@@ -214,6 +223,8 @@ public:
 		/// Insertion order preservation property is left intact.
 
 private:
+	void resetDynStruct() const;
+
 	template <typename C>
 	void doStringify(const C& container, std::ostream& out, unsigned int indent, unsigned int step) const
 	{
@@ -256,6 +267,7 @@ private:
 	KeyPtrList        _keys;
 	bool              _preserveInsOrder;
 	mutable StructPtr _pStruct;
+	mutable bool      _modified;
 };
 
 
@@ -278,7 +290,8 @@ inline bool Object::isArray(const std::string& key) const
 
 inline bool Object::isArray(ConstIterator& it) const
 {
-	return it != _values.end() && it->second.type() == typeid(Array::Ptr);
+	const std::type_info& ti = it->second.type();
+	return it != _values.end() && (ti == typeid(Array::Ptr) || ti == typeid(Array));
 }
 
 
@@ -298,7 +311,8 @@ inline bool Object::isObject(const std::string& key) const
 
 inline bool Object::isObject(ConstIterator& it) const
 {
-	return it != _values.end() && it->second.type() == typeid(Object::Ptr);
+	const std::type_info& ti = it->second.type();
+	return it != _values.end() && (ti == typeid(Object::Ptr) || ti == typeid(Object));
 }
 
 
@@ -324,6 +338,7 @@ inline void Object::remove(const std::string& key)
 			}
 		}
 	}
+	_modified = true;
 }
 
 

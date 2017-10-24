@@ -36,10 +36,10 @@ class Object;
 
 class JSON_API Array
 	/// Represents a JSON array. Array provides a representation
-	/// based on shared pointers and optimized for performance. It is possible to 
+	/// based on shared pointers and optimized for performance. It is possible to
 	/// convert Array to Poco::Dynamic::Array. Conversion requires copying and therefore
 	/// has performance penalty; the benefit is in improved syntax, eg:
-	/// 
+	///
 	///    // use pointers to avoid copying
 	///    using namespace Poco::JSON;
 	///    std::string json = "[ {\"test\" : 0}, { \"test1\" : [1, 2, 3], \"test2\" : 4 } ]";
@@ -51,7 +51,7 @@ class JSON_API Array
 	///    Object::Ptr subObject = *arr->getObject(1); // subObject == {\"test\" : 0}
 	///    Array subArr::Ptr = subObject->getArray("test1"); // subArr == [1, 2, 3]
 	///    i = result = subArr->get(0); // i == 1;
-	/// 
+	///
 	///    // copy/convert to Poco::Dynamic::Array
 	///    Poco::Dynamic::Array da = *arr;
 	///    i = da[0]["test"];     // i == 0
@@ -71,6 +71,15 @@ public:
 	Array(const Array& copy);
 		/// Creates an Array by copying another one.
 
+	Array(Array&& other);
+		/// Move constructor
+
+	Array& operator=(const Array& other);
+		/// Assignment operator.
+
+	Array& operator=(Array&& other);
+		/// Move assignment operator.
+
 	virtual ~Array();
 		/// Destroys the Array.
 
@@ -81,7 +90,7 @@ public:
 		/// Returns the end iterator for values.
 
 	Dynamic::Var get(unsigned int index) const;
-		/// Retrieves the element at the given index. 
+		/// Retrieves the element at the given index.
 		/// Will return an empty value when the element doesn't exist.
 
 	Array::Ptr getArray(unsigned int index) const;
@@ -165,6 +174,7 @@ public:
 		/// Removes the element on the given index.
 
 	operator const Poco::Dynamic::Array& () const;
+		/// Conversion operator to Dynamic::Array.
 
 	static Poco::Dynamic::Array makeArray(const JSON::Array::Ptr& arr);
 		/// Utility function for creation of array.
@@ -173,10 +183,13 @@ public:
 		/// Clears the contents of the array.
 
 private:
+	void resetDynArray() const;
+
 	typedef SharedPtr<Poco::Dynamic::Array> ArrayPtr;
 
 	ValueVec         _values;
 	mutable ArrayPtr _pArray;
+	mutable bool     _modified;
 };
 
 
@@ -224,6 +237,7 @@ inline bool Array::isArray(ConstIterator& it) const
 inline void Array::add(const Dynamic::Var& value)
 {
 	_values.push_back(value);
+	_modified = true;
 }
 
 
@@ -231,6 +245,7 @@ inline void Array::set(unsigned int index, const Dynamic::Var& value)
 {
 	if (index >= _values.size()) _values.resize(index + 1);
 	_values[index] = value;
+	_modified = true;
 }
 
 
@@ -354,11 +369,6 @@ public:
 	const JSON::Array::Ptr& value() const
 	{
 		return _val;
-	}
-
-	bool isArray() const
-	{
-		return false;
 	}
 
 	bool isInteger() const
@@ -493,11 +503,6 @@ public:
 	const JSON::Array& value() const
 	{
 		return _val;
-	}
-
-	bool isArray() const
-	{
-		return false;
 	}
 
 	bool isInteger() const
