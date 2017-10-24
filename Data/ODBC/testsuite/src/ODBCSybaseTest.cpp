@@ -60,7 +60,7 @@ using Poco::NotFoundException;
 #include "Poco/CppUnit/TestCaller.h"
 #include "Poco/CppUnit/TestSuite.h"
 
-#define SYBASE_DSN "" 
+#define SYBASE_DSN ""
 #define SYBASE_UID ""
 #define SYBASE_PWD ""
 #define SYBASE_DB "mstk"
@@ -115,7 +115,6 @@ ODBCTest(name, _pSession, _pExecutor, _dsn, _uid, _pwd, _connectString)
 
 void SybaseODBC::testBareboneODBC()
 {
-	if (!&session()) fail("Test not available.");
 }
 
 
@@ -365,7 +364,7 @@ void SybaseODBC::testStoredProcedure()
 				"select @os = @ins;"
 				"select @od = null;"
 				"select @dtm = null;"
-					" end" 
+					" end"
 				, now;
 			session() << "{ call " << nm << "(?, ?, ?, ?, ?) }", in(ins), out(oi), out(os), out(od), out(odtm), now;
 			dropObject("procedure", nm);
@@ -553,8 +552,6 @@ void SybaseODBC::testStoredProcedureAny()
 
 void SybaseODBC::testTransaction()
 {
-	if (!&session())fail("Test not available.");
-
 	for (int i = 0; i < 8;)
 	{
 		doPersonTable(" UNIQUE ");
