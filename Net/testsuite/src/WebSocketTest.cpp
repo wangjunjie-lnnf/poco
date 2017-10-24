@@ -55,7 +55,9 @@ namespace
 				int n;
 				do
 				{
-					n = ws.receiveFrame(buffer.begin(), buffer.size(), flags);
+					n = ws.receiveFrame(buffer.begin(), static_cast<int>(buffer.size()), flags);
+					if (n == 0)
+						break;
 					ws.sendFrame(buffer.begin(), n, flags);
 				}
 				while (n > 0 || (flags & WebSocket::FRAME_OP_BITMASK) != WebSocket::FRAME_OP_CLOSE);
@@ -245,7 +247,7 @@ void WebSocketTest::testOneLargeFrame(int msgSize)
 	int flags;
 	int n;
 
-	n = ws.receiveFrame(buffer.begin(), buffer.size(), flags);
+	n = ws.receiveFrame(buffer.begin(), static_cast<int>(buffer.size()), flags);
 	assert (n == payload.size());
 	assert (payload.compare(0, payload.size(), buffer.begin(), 0, n) == 0);
 

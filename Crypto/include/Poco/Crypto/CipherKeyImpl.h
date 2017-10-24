@@ -60,11 +60,11 @@ public:
 		/// the given cipher name, passphrase, salt value
 		/// and iteration count.
 
-	CipherKeyImpl(const std::string& name, 
-		const ByteVec& key, 
+	CipherKeyImpl(const std::string& name,
+		const ByteVec& key,
 		const ByteVec& iv
 	);
-		/// Creates a new CipherKeyImpl object, using the 
+		/// Creates a new CipherKeyImpl object, using the
 		/// given cipher name, key and initialization vector.
 
 	CipherKeyImpl(const std::string& name);
@@ -119,9 +119,9 @@ private:
 private:
 	const EVP_CIPHER*  _pCipher;
 	const EVP_MD*      _pDigest;
-	std::string	       _name;
-	ByteVec		       _key;
-	ByteVec		       _iv;
+	std::string        _name;
+	ByteVec            _key;
+	ByteVec            _iv;
 	OpenSSLInitializer _openSSLInitializer;
 };
 

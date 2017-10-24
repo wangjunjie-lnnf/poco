@@ -187,7 +187,7 @@
 	#else
 		#define POCO_ARCH_LITTLE_ENDIAN 1
 	#endif
-#elif defined(__arm64__) || defined(__arm64) 
+#elif defined(__arm64__) || defined(__arm64)
 	#define POCO_ARCH POCO_ARCH_ARM64
 	#if defined(__ARMEB__)
 		#define POCO_ARCH_BIG_ENDIAN 1
@@ -229,6 +229,9 @@
 	#define POCO_COMPILER_MSVC
 #elif defined(__clang__)
 	#define POCO_COMPILER_CLANG
+	#if defined(__apple_build_version__)
+		#define POCO_COMPILER_APPLECLANG
+	#endif
 #elif defined (__GNUC__)
 	#define POCO_COMPILER_GCC
 #elif defined (__MINGW32__) || defined (__MINGW64__)
