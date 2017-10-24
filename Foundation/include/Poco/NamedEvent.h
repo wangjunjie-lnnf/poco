@@ -21,9 +21,7 @@
 #include "Poco/Foundation.h"
 
 
-#if defined(POCO_OS_FAMILY_WINDOWS) && defined(POCO_WIN32_UTF8)
-#include "Poco/NamedEvent_WIN32U.h"
-#elif defined(POCO_OS_FAMILY_WINDOWS)
+#if defined(POCO_OS_FAMILY_WINDOWS)
 #include "Poco/NamedEvent_WIN32.h"
 #elif defined(POCO_ANDROID)
 #include "Poco/NamedEvent_Android.h"
@@ -38,7 +36,7 @@ namespace Poco {
 
 
 class Foundation_API NamedEvent: public NamedEventImpl
-	/// An NamedEvent is a global synchronization object 
+	/// An NamedEvent is a global synchronization object
 	/// that allows one process or thread to signal an
 	/// other process or thread that a certain event
 	/// has happened.
@@ -63,8 +61,8 @@ public:
 		/// Destroys the event.
 
 	void set();
-		/// Signals the event. 
-		/// The one thread or process waiting for the event 
+		/// Signals the event.
+		/// The one thread or process waiting for the event
 		/// can resume execution.
 
 	void wait();

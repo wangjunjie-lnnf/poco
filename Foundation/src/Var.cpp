@@ -34,7 +34,7 @@ Var::Var()
 
 
 Var::Var(const char* pVal)
-#ifdef POCO_NO_SOO 
+#ifdef POCO_NO_SOO
 	: _pHolder(new VarHolderImpl<std::string>(pVal))
 {
 }
@@ -337,6 +337,19 @@ void Var::empty()
 }
 
 
+void Var::clear()
+{
+#ifdef POCO_NO_SOO
+	delete _pHolder;
+	_pHolder = 0;
+#else
+	if (_placeholder.isLocal()) this->~Var();
+	else delete content();
+	_placeholder.erase();
+#endif
+}
+
+
 Var& Var::getAt(std::size_t n)
 {
 	if (isVector())
@@ -477,7 +490,7 @@ Var Var::parseObject(const std::string& val, std::string::size_type& pos)
 		std::string key = parseString(val, pos);
 		skipWhiteSpace(val, pos);
 		if (val[pos] != ':')
-			throw DataFormatException("Incorrect object, must contain: key : value pairs"); 
+			throw DataFormatException("Incorrect object, must contain: key : value pairs");
 		++pos; // skip past :
 		Var value = parse(val, pos);
 		aStruct.insert(key, value);
@@ -489,7 +502,7 @@ Var Var::parseObject(const std::string& val, std::string::size_type& pos)
 		}
 	}
 	if (val[pos] != '}')
-		throw DataFormatException("Unterminated object"); 
+		throw DataFormatException("Unterminated object");
 	++pos;
 	return aStruct;
 }
@@ -512,7 +525,7 @@ Var Var::parseArray(const std::string& val, std::string::size_type& pos)
 		}
 	}
 	if (val[pos] != ']')
-		throw DataFormatException("Unterminated array"); 
+		throw DataFormatException("Unterminated array");
 	++pos;
 	return result;
 }
@@ -528,8 +541,8 @@ std::string Var::parseString(const std::string& val, std::string::size_type& pos
 	else
 	{
 		std::string result;
-		while (pos < val.size() 
-			&& !Poco::Ascii::isSpace(val[pos]) 
+		while (pos < val.size()
+			&& !Poco::Ascii::isSpace(val[pos])
 			&& val[pos] != ','
 			&& val[pos] != ']'
 			&& val[pos] != '}')
@@ -563,19 +576,19 @@ std::string Var::parseJSONString(const std::string& val, std::string::size_type&
 				{
 				case 'b':
 					result += '\b';
-					break; 
+					break;
 				case 'f':
 					result += '\f';
-					break; 
+					break;
 				case 'n':
 					result += '\n';
-					break; 
+					break;
 				case 'r':
 					result += '\r';
-					break; 
+					break;
 				case 't':
 					result += '\t';
-					break; 
+					break;
 				default:
 					result += val[pos];
 					break;
