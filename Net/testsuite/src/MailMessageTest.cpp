@@ -122,7 +122,7 @@ void MailMessageTest::testWriteQP()
 	message.write(str);
 	std::string s = str.str();
 
-	assert (s == 
+	assert (s ==
 		"Date: Thu, 1 Jan 1970 00:00:00 GMT\r\n"
 		"Content-Type: text/plain\r\n"
 		"Subject: Test Message\r\n"
@@ -158,7 +158,7 @@ void MailMessageTest::testWrite8Bit()
 	std::ostringstream str;
 	message.write(str);
 	std::string s = str.str();
-	assert (s == 
+	assert (s ==
 		"Date: Thu, 1 Jan 1970 00:00:00 GMT\r\n"
 		"Content-Type: text/plain\r\n"
 		"Subject: Test Message\r\n"
@@ -190,7 +190,7 @@ void MailMessageTest::testWriteBase64()
 	std::ostringstream str;
 	message.write(str);
 	std::string s = str.str();
-	assert (s == 
+	assert (s ==
 		"Date: Thu, 1 Jan 1970 00:00:00 GMT\r\n"
 		"Content-Type: text/plain\r\n"
 		"Subject: Test Message\r\n"
@@ -230,7 +230,7 @@ void MailMessageTest::testWriteManyRecipients()
 	std::ostringstream str;
 	message.write(str);
 	std::string s = str.str();
-	assert (s == 
+	assert (s ==
 		"Date: Thu, 1 Jan 1970 00:00:00 GMT\r\n"
 		"Content-Type: text/plain\r\n"
 		"Subject: Test Message\r\n"
@@ -243,6 +243,19 @@ void MailMessageTest::testWriteManyRecipients()
 		"Hello, world!\r\n"
 		"This is a test for the MailMessage class.\r\n"
 	);
+
+	const Poco::Net::MailMessage::Recipients& recipients = message.recipients();
+	assert (recipients.size() == 5);
+	assert (recipients[0].getAddress() == "john.doe@no.where");
+	assert (recipients[0].getRealName() == "John Doe");
+	assert (recipients[1].getAddress() == "jane.doe@no.where");
+	assert (recipients[1].getRealName() == "Jane Doe");
+	assert (recipients[2].getAddress() == "walter.foo@no.where");
+	assert (recipients[2].getRealName() == "Frank Foo");
+	assert (recipients[3].getAddress() == "bernie.bar@no.where");
+	assert (recipients[3].getRealName() == "Bernie Bar");
+	assert (recipients[4].getAddress() == "joe.spammer@no.where");
+	assert (recipients[4].getRealName() == "Joe Spammer");
 }
 
 
@@ -327,7 +340,7 @@ void MailMessageTest::testReadQP()
 	
 	assert (message.getSender() == "poco@appinf.com");
 	assert (message.getContentType() == "text/plain");
-	assert (message.getContent() == 
+	assert (message.getContent() ==
 		"Hello, world!\r\n"
 		"This is a test for the MailMessage class.\r\n"
 		"To test the quoted-printable encoding, we'll put an extra long line here. This should be enough.\r\n"
@@ -361,6 +374,28 @@ void MailMessageTest::testReadDefaultTransferEncoding()
 }
 
 
+void MailMessageTest::testReadDefaultContentType()
+{
+	std::istringstream istr("Date: Thu, 1 Jan 1970 00:00:00 GMT\r\n"
+		"From: poco@appinf.com\r\n"
+		"Subject: Test Message\r\n"
+		"To: John Doe <john.doe@no.where>\r\n"
+		"\r\n"
+		"Hello, world!\r\n"
+		"This is a test for the MailMessage class.\r\n"
+	);
+
+	MailMessage message;
+	message.read(istr);
+
+	assert (message.getSender() == "poco@appinf.com");
+	assert (message.getContentType() == "text/plain");
+	assert (message.getContent() == "Hello, world!\r\n"
+		"This is a test for the MailMessage class.\r\n"
+	);
+}
+
+
 void MailMessageTest::testRead8Bit()
 {
 	std::istringstream istr(
@@ -380,7 +415,7 @@ void MailMessageTest::testRead8Bit()
 	
 	assert (message.getSender() == "poco@appinf.com");
 	assert (message.getContentType() == "text/plain");
-	assert (message.getContent() == 
+	assert (message.getContent() ==
 		"Hello, world!\r\n"
 		"This is a test for the MailMessage class.\r\n"
 	);
@@ -455,10 +490,10 @@ void MailMessageTest::testReadMultiPartWithAttachmentNames()
 		"VGhpcyBpcyBzb21lIGJpbmFyeSBkYXRhLiBSZWFsbHku\r\n"
 		"--MIME_boundary_01234567--\r\n"
 	);
-	
+
 	MailMessage message;
 	message.read(istr);
-	
+
 	assert (message.parts().size() == 2);
 	assert (message.parts()[1].name == "sample");
 	assert (message.parts()[1].pSource->filename() == "sample.dat");
@@ -539,7 +574,7 @@ void MailMessageTest::testReadWriteMultiPart()
 
 	message.read(istr);
 	message.write(ostr);
-	
+
 	std::string msgout(ostr.str());
 	assert (msgout == msgin);
 }
@@ -654,8 +689,10 @@ CppUnit::Test* MailMessageTest::suite()
 	CppUnit_addTest(pSuite, MailMessageTest, testWriteMultiPart);
 	CppUnit_addTest(pSuite, MailMessageTest, testReadQP);
 	CppUnit_addTest(pSuite, MailMessageTest, testReadDefaultTransferEncoding);
+	CppUnit_addTest(pSuite, MailMessageTest, testReadDefaultContentType);
 	CppUnit_addTest(pSuite, MailMessageTest, testRead8Bit);
 	CppUnit_addTest(pSuite, MailMessageTest, testReadMultiPart);
+	CppUnit_addTest(pSuite, MailMessageTest, testReadMultiPartWithAttachmentNames);
 	CppUnit_addTest(pSuite, MailMessageTest, testReadMultiPartDefaultTransferEncoding);
 	CppUnit_addTest(pSuite, MailMessageTest, testReadWriteMultiPart);
 	CppUnit_addTest(pSuite, MailMessageTest, testReadWriteMultiPartStore);
