@@ -67,9 +67,9 @@ class Foundation_API PurgeByAgeStrategy: public PurgeStrategy
 public:
 	PurgeByAgeStrategy(const Timespan& age);
 	~PurgeByAgeStrategy();
-	
+
 	void purge(const std::string& path);
-	
+
 private:
 	Timespan _age;
 };
@@ -83,11 +83,21 @@ class Foundation_API PurgeByCountStrategy: public PurgeStrategy
 public:
 	PurgeByCountStrategy(int count);
 	~PurgeByCountStrategy();
-	
+
 	void purge(const std::string& path);
-	
+
 private:
 	int _count;
+};
+
+
+class Foundation_API PurgeOneFileStrategy: public PurgeStrategy
+	/// This purge strategy unconditionally purges one oldest file.
+	/// If there are no archived files, it will truncate current "hot" log file.
+	/// Intended usage: when there are no space left on device with logs.
+{
+public:
+	void purge(const std::string& path);
 };
 
 
