@@ -39,7 +39,7 @@ const std::string FileChannel::PROP_PURGECOUNT   = "purgeCount";
 const std::string FileChannel::PROP_FLUSH        = "flush";
 const std::string FileChannel::PROP_ROTATEONOPEN = "rotateOnOpen";
 
-FileChannel::FileChannel(): 
+FileChannel::FileChannel():
 	_times("utc"),
 	_compress(false),
 	_flush(true),
@@ -85,7 +85,7 @@ FileChannel::~FileChannel()
 void FileChannel::open()
 {
 	FastMutex::ScopedLock lock(_mutex);
-	
+
 	if (!_pFile)
 	{
 		_pFile = new LogFile(_path);
@@ -136,10 +136,28 @@ void FileChannel::log(const Message& msg)
 		// to the new file.
 		_pRotateStrategy->mustRotate(_pFile);
 	}
-	_pFile->write(msg.getText(), _flush);
+
+	try
+	{
+        _pFile->write(msg.getText(), _flush);
+    }
+    catch (const WriteFileException & e)
+    {
+        // In case of no space left on device,
+        // we try to purge old files or truncate current file.
+
+        // NOTE: error reason is not preserved in WriteFileException, we need to check errno manually.
+        // NOTE: other reasons like quota exceeded are not handled.
+        // NOTE: current log message will be lost.
+
+        if (errno == ENOSPC)
+        {
+            PurgeOneFileStrategy().purge(_path);
+        }
+    }
 }
 
-	
+
 void FileChannel::setProperty(const std::string& name, const std::string& value)
 {
 	FastMutex::ScopedLock lock(_mutex);
@@ -208,7 +226,7 @@ Timestamp FileChannel::creationDate() const
 		return 0;
 }
 
-	
+
 UInt64 FileChannel::size() const
 {
 	if (_pFile)
@@ -234,7 +252,7 @@ void FileChannel::setRotation(const std::string& rotation)
 	while (it != end && Ascii::isSpace(*it)) ++it;
 	std::string unit;
 	while (it != end && Ascii::isAlpha(*it)) unit += *it++;
-	
+
 	RotateStrategy* pStrategy = 0;
 	if ((rotation.find(',') != std::string::npos) || (rotation.find(':') != std::string::npos))
 	{
@@ -379,13 +397,13 @@ int FileChannel::extractDigit(const std::string& value, std::string::const_itera
 
 	while (it != end && Ascii::isSpace(*it)) ++it;
 	while (it != end && Ascii::isDigit(*it))
-	{ 
+	{
 		digit *= 10;
 		digit += *it++ - '0';
 	}
 
 	if (digit == 0)
-		throw InvalidArgumentException("Zero is not valid purge age.");	
+		throw InvalidArgumentException("Zero is not valid purge age.");
 
 	if (nextToDigit) *nextToDigit = it;
 	return digit;
@@ -405,7 +423,7 @@ Timespan::TimeDiff FileChannel::extractFactor(const std::string& value, std::str
 
 	std::string unit;
 	while (start != value.end() && Ascii::isAlpha(*start)) unit += *start++;
- 
+
 	if (unit == "seconds")
 		return Timespan::SECONDS;
 	if (unit == "minutes")
