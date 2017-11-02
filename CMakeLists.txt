@@ -49,6 +49,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 option(DISABLE_CPP14 "Disable C++14 if available" OFF)
 
+if (0) # no need in clickhouse
+
 if (DISABLE_CPP14)
     add_definitions(-DPOCO_DISABLE_CPP14)
 else()
@@ -61,6 +63,9 @@ else()
     enable_cxx14()
   endif()
 endif()
+
+endif()
+add_definitions( -Wno-sign-compare -Wno-non-virtual-destructor -fno-strict-aliasing -Wno-unknown-pragmas)
 
 if(NOT MSVC_IDE)
     if(NOT CMAKE_BUILD_TYPE)
