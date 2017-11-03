@@ -65,7 +65,7 @@ else()
 endif()
 
 endif()
-add_definitions( -Wno-sign-compare -Wno-non-virtual-destructor -fno-strict-aliasing -Wno-unknown-pragmas)
+add_definitions( -Wno-sign-compare -Wno-non-virtual-dtor -fno-strict-aliasing -Wno-unknown-pragmas)
 
 if(NOT MSVC_IDE)
     if(NOT CMAKE_BUILD_TYPE)
