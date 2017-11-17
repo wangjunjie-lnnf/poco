@@ -65,7 +65,9 @@ else()
 endif()
 
 endif()
-add_definitions( -Wno-sign-compare -Wno-non-virtual-dtor -fno-strict-aliasing -Wno-unknown-pragmas)
+
+set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-sign-compare -fno-strict-aliasing -Wno-unknown-pragmas")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-sign-compare  -fno-strict-aliasing -Wno-unknown-pragmas -Wno-non-virtual-dtor")
 
 if(NOT MSVC_IDE)
     if(NOT CMAKE_BUILD_TYPE)
