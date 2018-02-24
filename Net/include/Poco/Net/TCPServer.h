@@ -28,6 +28,8 @@
 #include "Poco/Thread.h"
 #include "Poco/ThreadPool.h"
 
+#include <atomic>
+
 
 namespace Poco {
 namespace Net {
@@ -184,7 +186,7 @@ private:
 	ServerSocket         _socket;
 	TCPServerDispatcher* _pDispatcher;
 	Poco::Thread         _thread;
-	bool                 _stopped;
+	std::atomic<bool> _stopped;
 };
 
 
