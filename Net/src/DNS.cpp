@@ -22,6 +22,7 @@
 #include "Poco/Mutex.h"
 #include <cstring>
 #include <list>
+#include <atomic>
 
 
 #if defined(POCO_HAVE_LIBRESOLV)
@@ -121,7 +122,6 @@ private:
 		gaicb_ext()
 		{
 			memset(this, 0, sizeof(gaicb_ext));
-			unused = false;
 		}
 
 		~gaicb_ext()
@@ -136,7 +136,7 @@ private:
 			}
 		}
 
-		bool unused;
+		std::atomic<bool> unused {false};
 	};
 
 	std::list<gaicb_ext> requests;
