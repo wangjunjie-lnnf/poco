@@ -61,7 +61,7 @@ public:
 		/// the TCP server at the given address. Prior to opening the
 		/// connection the socket is set to nonblocking mode.
 		
-	void bind(const SocketAddress& address, bool reuseAddress = false);
+	void bind(const SocketAddress& address, bool reuseAddress = false, bool reusePort = false);
 		/// Not supported by a SecureStreamSocket.
 		///
 		/// Throws a Poco::InvalidAccessException.
