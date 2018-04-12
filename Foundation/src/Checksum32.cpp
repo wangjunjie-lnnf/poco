@@ -13,7 +13,7 @@
 
 
 #include "Poco/Checksum32.h"
-#if defined(POCO_UNBUNDLED)
+#if defined(POCO_UNBUNDLED_ZLIB)
 #include <zlib.h>
 #else
 #include "Poco/zlib.h"
