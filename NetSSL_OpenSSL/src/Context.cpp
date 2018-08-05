@@ -114,7 +114,7 @@ Context::~Context()
 void Context::init(const Params& params)
 {
 	Poco::Crypto::OpenSSLInitializer::initialize();
-	
+
 	createSSLContext();
 
 	try
@@ -173,7 +173,7 @@ void Context::init(const Params& params)
 		SSL_CTX_set_verify_depth(_pSSLContext, params.verificationDepth);
 		SSL_CTX_set_mode(_pSSLContext, SSL_MODE_AUTO_RETRY);
 		SSL_CTX_set_session_cache_mode(_pSSLContext, SSL_SESS_CACHE_OFF);
-		
+
 		initDH(params.dhParamsFile);
 		initECDH(params.ecdhCurve);
 	}
@@ -195,7 +195,7 @@ void Context::useCertificate(const Poco::Crypto::X509Certificate& certificate)
 	}
 }
 
-	
+
 void Context::addChainCertificate(const Poco::Crypto::X509Certificate& certificate)
 {
 	int errCode = SSL_CTX_add_extra_chain_cert(_pSSLContext, certificate.certificate());
@@ -206,7 +206,7 @@ void Context::addChainCertificate(const Poco::Crypto::X509Certificate& certifica
 	}
 }
 
-	
+
 void Context::usePrivateKey(const Poco::Crypto::RSAKey& key)
 {
 	int errCode = SSL_CTX_use_RSAPrivateKey(_pSSLContext, key.impl()->getRSA());
@@ -243,7 +243,7 @@ void Context::enableSessionCache(bool flag, const std::string& sessionIdContext)
 	{
 		SSL_CTX_set_session_cache_mode(_pSSLContext, SSL_SESS_CACHE_OFF);
 	}
-	
+
 	unsigned length = static_cast<unsigned>(sessionIdContext.length());
 	if (length > SSL_MAX_SSL_SESSION_ID_LENGTH) length = SSL_MAX_SSL_SESSION_ID_LENGTH;
 	int rc = SSL_CTX_set_session_id_context(_pSSLContext, reinterpret_cast<const unsigned char*>(sessionIdContext.data()), length);
@@ -260,15 +260,15 @@ bool Context::sessionCacheEnabled() const
 void Context::setSessionCacheSize(std::size_t size)
 {
 	poco_assert (isForServerUse());
-	
+
 	SSL_CTX_sess_set_cache_size(_pSSLContext, static_cast<long>(size));
 }
 
-	
+
 std::size_t Context::getSessionCacheSize() const
 {
 	poco_assert (isForServerUse());
-	
+
 	return static_cast<std::size_t>(SSL_CTX_sess_get_cache_size(_pSSLContext));
 }
 
@@ -492,7 +492,7 @@ void Context::initDH(const std::string& dhParamsFile)
 			std::string msg = Utility::getLastError();
 			throw SSLContextException("Error creating Diffie-Hellman parameters", msg);
 		}
-#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L && !defined(LIBRESSL_VERSION_NUMBER)
 		BIGNUM* p = BN_bin2bn(dh1024_p, sizeof(dh1024_p), 0);
 		BIGNUM* g = BN_bin2bn(dh1024_g, sizeof(dh1024_g), 0);
 		DH_set0_pqg(dh, p, 0, g);
@@ -522,7 +522,7 @@ void Context::initDH(const std::string& dhParamsFile)
 #endif
 }
 
-	
+
 void Context::initECDH(const std::string& curve)
 {
 #if OPENSSL_VERSION_NUMBER >= 0x0090800fL
