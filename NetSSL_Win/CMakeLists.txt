@@ -23,7 +23,7 @@ set_target_properties(NetSSLWin
 
 target_link_libraries(NetSSLWin PUBLIC Poco::Net Poco::Util Crypt32.lib)
 target_include_directories(NetSSLWin
-    PUBLIC
+    SYSTEM PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src

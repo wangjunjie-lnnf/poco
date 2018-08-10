@@ -23,7 +23,7 @@ set_target_properties(SQLODBC
 
 target_link_libraries(SQLODBC PUBLIC Poco::SQL ODBC::ODBC)
 target_include_directories(SQLODBC
-    PUBLIC
+    SYSTEM PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src

@@ -140,7 +140,7 @@ if (POCO_UNBUNDLED)
 endif (POCO_UNBUNDLED)
 target_link_libraries(PDF PUBLIC Poco::XML Poco::Util)
 target_include_directories(PDF
-    PUBLIC
+    SYSTEM PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src

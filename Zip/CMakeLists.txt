@@ -23,7 +23,7 @@ set_target_properties( Zip
 
 target_link_libraries(Zip PUBLIC Poco::Util Poco::XML)
 target_include_directories(Zip
-    PUBLIC
+    SYSTEM PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src

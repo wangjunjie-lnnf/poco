@@ -23,7 +23,7 @@ set_target_properties(Redis
 
 target_link_libraries(Redis PUBLIC Poco::Net)
 target_include_directories(Redis
-    PUBLIC
+    SYSTEM PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src

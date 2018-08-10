@@ -12,7 +12,7 @@ set_target_properties(mod_poco
     VERSION ${SHARED_LIBRARY_VERSION} SOVERSION ${SHARED_LIBRARY_VERSION}
     DEFINE_SYMBOL ApacheHandlers_EXPORTS)
 target_include_directories(mod_poco
-    PUBLIC
+    SYSTEM PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
     PRIVATE

@@ -23,7 +23,7 @@ set_target_properties( NetSSL
 
 target_link_libraries(NetSSL PUBLIC Poco::Crypto Poco::Util Poco::Net)
 target_include_directories(NetSSL
-    PUBLIC
+    SYSTEM PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src

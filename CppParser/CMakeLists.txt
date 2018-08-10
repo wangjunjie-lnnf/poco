@@ -23,7 +23,7 @@ set_target_properties(CppParser
 
 target_link_libraries(CppParser PUBLIC Poco::Foundation)
 target_include_directories(CppParser
-    PUBLIC
+    SYSTEM PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
