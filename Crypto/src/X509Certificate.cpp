@@ -60,7 +60,7 @@ X509Certificate::X509Certificate(X509* pCert, bool shared):
 	_pCert(pCert)
 {
 	poco_check_ptr(_pCert);
-	
+
 	if (shared)
 	{
 #if OPENSSL_VERSION_NUMBER >= 0x10100000L
@@ -279,7 +279,7 @@ Poco::DateTime X509Certificate::validFrom() const
 	return DateTimeParser::parse("%y%m%d%H%M%S", dateTime, tzd);
 }
 
-	
+
 Poco::DateTime X509Certificate::expiresOn() const
 {
 	ASN1_TIME* certTime = X509_get_notAfter(_pCert);
@@ -313,7 +313,7 @@ std::string X509Certificate::signatureAlgorithm() const
 {
 	int sigNID = NID_undef;
 
-#if (OPENSSL_VERSION_NUMBER >=  0x1010000fL)
+#if (OPENSSL_VERSION_NUMBER >=  0x1010000fL) && !defined(LIBRESSL_VERSION_NUMBER)
 	sigNID = X509_get_signature_nid(_pCert);
 #else
 	poco_check_ptr(_pCert->sig_alg);

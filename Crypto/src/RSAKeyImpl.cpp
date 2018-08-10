@@ -229,7 +229,7 @@ int RSAKeyImpl::size() const
 
 RSAKeyImpl::ByteVec RSAKeyImpl::modulus() const
 {
-#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L && !defined(LIBRESSL_VERSION_NUMBER)
 	const BIGNUM* n = 0;
 	const BIGNUM* e = 0;
 	const BIGNUM* d = 0;
@@ -243,7 +243,7 @@ RSAKeyImpl::ByteVec RSAKeyImpl::modulus() const
 
 RSAKeyImpl::ByteVec RSAKeyImpl::encryptionExponent() const
 {
-#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L && !defined(LIBRESSL_VERSION_NUMBER)
 	const BIGNUM* n = 0;
 	const BIGNUM* e = 0;
 	const BIGNUM* d = 0;
@@ -257,7 +257,7 @@ RSAKeyImpl::ByteVec RSAKeyImpl::encryptionExponent() const
 
 RSAKeyImpl::ByteVec RSAKeyImpl::decryptionExponent() const
 {
-#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L && !defined(LIBRESSL_VERSION_NUMBER)
 	const BIGNUM* n = 0;
 	const BIGNUM* e = 0;
 	const BIGNUM* d = 0;
@@ -293,7 +293,7 @@ void RSAKeyImpl::save(const std::string& publicKeyFile,
 		}
 		BIO_free(bio);
 	}
-	
+
 	if (!privateKeyFile.empty())
 	{
 		BIO* bio = BIO_new(BIO_s_file());

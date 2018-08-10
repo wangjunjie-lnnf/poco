@@ -26,10 +26,10 @@ DigestEngine::DigestEngine(const std::string& name):
 {
 	const EVP_MD* md = EVP_get_digestbyname(_name.c_str());
 	if (!md) throw OpenSSLException(_name);
-	EVP_DigestInit_ex(_pContext, md, NULL);	
+	EVP_DigestInit_ex(_pContext, md, NULL);
 }
 
-	
+
 DigestEngine::~DigestEngine()
 {
 	EVP_MD_CTX_destroy(_pContext);
@@ -48,7 +48,7 @@ std::size_t DigestEngine::digestLength() const
 
 void DigestEngine::reset()
 {
-#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L && !defined(LIBRESSL_VERSION_NUMBER)
 	EVP_MD_CTX_free(_pContext);
 	_pContext = EVP_MD_CTX_create();
 #else
