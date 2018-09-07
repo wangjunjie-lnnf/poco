@@ -88,25 +88,15 @@ public:
 		_pSession(pSession)
 	{
 	}
-		
+
 	~FTPSStream()
 	{
 		delete _pSession;
 	}
-	
+
 private:
 	FTPSClientSession* _pSession;
 };
-
-
-FTPPasswordProvider::FTPPasswordProvider()
-{
-}
-
-
-FTPPasswordProvider::~FTPPasswordProvider()
-{
-}
 
 
 std::string          FTPSStreamFactory::_anonymousPassword("poco@localhost");
