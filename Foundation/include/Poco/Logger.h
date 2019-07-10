@@ -444,8 +444,9 @@ public:
 		
 	static const std::string ROOT; /// The name of the root logger ("").
 
-    void force_log(const std::string& text, Message::Priority prio);
-    void force_log(const std::string& text, Message::Priority prio, const char* file, int line);
+	void force_log(const std::string& text, Message::Priority prio);
+	void force_log(const std::string& text, Message::Priority prio, const char* file, int line);
+		///Logs text without priority checking
 		
 protected:
 	typedef std::map<std::string, Logger*> LoggerMap;
