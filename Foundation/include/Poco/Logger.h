@@ -443,11 +443,7 @@ public:
 		///
 		/// The level is not case sensitive.
 		
-	static const std::string ROOT; /// The name of the root logger ("").
-
-	void force_log(const std::string& text, Message::Priority prio);
-	void force_log(const std::string& text, Message::Priority prio, const char* file, int line);
-		///Logs text without priority checking
+	static const std::string ROOT; /// The name of the root logger ("").	
 		
 protected:
 	typedef std::map<std::string, Logger*> LoggerMap;
@@ -613,24 +609,6 @@ inline const std::string& Logger::name() const
 inline int Logger::getLevel() const
 {
 	return _level;
-}
-
-
-inline void Logger::force_log(const std::string& text, Message::Priority prio)
-{
-    if (_pChannel)
-    {
-        _pChannel->log(Message(_name, text, prio));
-    }
-}
-
-
-inline void Logger::force_log(const std::string& text, Message::Priority prio, const char* file, int line)
-{
-    if (_pChannel)
-    {
-        _pChannel->log(Message(_name, text, prio, file, line));
-    }
 }
 
 
