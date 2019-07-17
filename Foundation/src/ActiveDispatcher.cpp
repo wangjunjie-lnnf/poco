@@ -49,14 +49,12 @@ namespace
 
 ActiveDispatcher::ActiveDispatcher()
 {
-	_thread.start(*this);
 }
 
 
 ActiveDispatcher::ActiveDispatcher(Thread::Priority prio)
 {
 	_thread.setPriority(prio);
-	_thread.start(*this);
 }
 
 
@@ -75,6 +73,11 @@ ActiveDispatcher::~ActiveDispatcher()
 void ActiveDispatcher::start(ActiveRunnableBase::Ptr pRunnable)
 {
 	poco_check_ptr (pRunnable);
+
+    if (!_thread.isRunning())
+    {
+        _thread.start(*this);
+    }
 
 	_queue.enqueueNotification(new MethodNotification(pRunnable));
 }
