@@ -303,7 +303,7 @@ protected:
 		/// Returns the well-known port number for the URI's scheme,
 		/// or 0 if the port number is not known.
 		
-	void parse(const std::string& uri);
+	void parse(const std::string& uriToParse);
 		/// Parses and assigns an URI from the given string. Throws a
 		/// SyntaxException if the uri is not valid.
 

@@ -717,8 +717,11 @@ unsigned short URI::getWellKnownPort() const
 }
 
 
-void URI::parse(const std::string& uri)
+void URI::parse(const std::string& uriToParse)
 {
+	std::string uri(uriToParse);
+	uri.erase(std::remove_if(uri.begin(), uri.end(), ::isspace), uri.end());
+
 	std::string::const_iterator it  = uri.begin();
 	std::string::const_iterator end = uri.end();
 	if (it == end) return;

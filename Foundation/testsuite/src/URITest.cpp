@@ -173,6 +173,16 @@ void URITest::testParse()
 	assert (uri.getFragment().empty());
 	assert (!uri.isRelative());
 
+	// security testing (WhiteSpaces)
+
+	uri = "http\r\n\f\t ://www.appinf\r\n\f\t .com";
+	assert (uri.getScheme() == "http");
+	assert (uri.getAuthority() == "www.appinf.com");
+	assert (uri.getPath().empty());
+	assert (uri.getQuery().empty());
+	assert (uri.getFragment().empty());
+	assert (!uri.isRelative());
+
 	uri = "http://www.appinf.com/";
 	assert (uri.getScheme() == "http");
 	assert (uri.getAuthority() == "www.appinf.com");
