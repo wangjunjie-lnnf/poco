@@ -17,6 +17,7 @@
 
 using Poco::URI;
 using Poco::Path;
+using std::string_literals::operator""s;
 
 
 URITest::URITest(const std::string& rName): CppUnit::TestCase(rName)
@@ -175,7 +176,7 @@ void URITest::testParse()
 
 	// security testing (WhiteSpaces)
 
-	uri = "http\r\n\f\t ://www.appinf\r\n\f\t .com";
+	uri = "http\r\n\f\t ://ww\0w.\fappinf\r\n\f\t .com"s;
 	assert (uri.getScheme() == "http");
 	assert (uri.getAuthority() == "www.appinf.com");
 	assert (uri.getPath().empty());
