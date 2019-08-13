@@ -9,6 +9,7 @@
 
 
 #include "URITest.h"
+#include "Poco/Exception.h"
 #include "Poco/CppUnit/TestCaller.h"
 #include "Poco/CppUnit/TestSuite.h"
 #include "Poco/URI.h"
@@ -174,15 +175,15 @@ void URITest::testParse()
 	assert (uri.getFragment().empty());
 	assert (!uri.isRelative());
 
-	// security testing (WhiteSpaces)
+	// security testing (Illegal Characters)
 
-	uri = "http\r\n\f\t ://ww\0w.\fappinf\r\n\f\t .com"s;
-	assert (uri.getScheme() == "http");
-	assert (uri.getAuthority() == "www.appinf.com");
-	assert (uri.getPath().empty());
-	assert (uri.getQuery().empty());
-	assert (uri.getFragment().empty());
-	assert (!uri.isRelative());
+	try {
+		uri = "http\r\n\f\t ://ww\0w.\fappinf\r\n\f\t .com"s;
+		fail("URI contains invalid characters - must throw");
+	}
+	catch (Poco::URISyntaxException&)
+	{
+	}
 
 	uri = "http://www.appinf.com/";
 	assert (uri.getScheme() == "http");

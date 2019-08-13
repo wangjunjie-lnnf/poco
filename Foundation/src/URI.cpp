@@ -717,12 +717,12 @@ unsigned short URI::getWellKnownPort() const
 }
 
 
-void URI::parse(const std::string& uriToParse)
+void URI::parse(const std::string& uri)
 {
-	std::string uri(uriToParse);
-	uri.erase(std::remove_if(uri.begin(), uri.end(), [](int ch) {
-		return !std::isprint(ch) or ch == ' ';
-	}), uri.end());
+	std::for_each(uri.begin(), uri.end(), [] (char const &ch) {
+		if (std::iscntrl(ch) or ch == ' ')
+			throw URISyntaxException("URI contains invalid characters");
+	});
 
 	std::string::const_iterator it  = uri.begin();
 	std::string::const_iterator end = uri.end();
