@@ -136,7 +136,25 @@ void FileChannel::log(const Message& msg)
 		// to the new file.
 		_pRotateStrategy->mustRotate(_pFile);
 	}
+
+	try
+	{
 	_pFile->write(msg.getText(), _flush);
+    }
+    catch (const WriteFileException & e)
+    {
+        // In case of no space left on device,
+        // we try to purge old files or truncate current file.
+
+        // NOTE: error reason is not preserved in WriteFileException, we need to check errno manually.
+        // NOTE: other reasons like quota exceeded are not handled.
+        // NOTE: current log message will be lost.
+
+        if (errno == ENOSPC)
+        {
+            PurgeOneFileStrategy().purge(_path);
+        }
+    }
 }
 
 	
