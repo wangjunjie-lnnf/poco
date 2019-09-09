@@ -242,6 +242,7 @@ protected:
 	void setFlush(const std::string& flush);
 	void setRotateOnOpen(const std::string& rotateOnOpen);
 	void purge();
+	void unsafeOpen();
 
 private:
 	bool setNoPurge(const std::string& value);
