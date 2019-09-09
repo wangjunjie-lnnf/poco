@@ -86,22 +86,7 @@ void FileChannel::open()
 {
 	FastMutex::ScopedLock lock(_mutex);
 	
-	if (!_pFile)
-	{
-		_pFile = new LogFile(_path);
-		if (_rotateOnOpen && _pFile->size() > 0)
-		{
-			try
-			{
-				_pFile = _pArchiveStrategy->archive(_pFile);
-				purge();
-			}
-			catch (...)
-			{
-				_pFile = new LogFile(_path);
-			}
-		}
-	}
+	unsafeOpen();
 }
 
 
@@ -116,9 +101,9 @@ void FileChannel::close()
 
 void FileChannel::log(const Message& msg)
 {
-	open();
-
 	FastMutex::ScopedLock lock(_mutex);
+
+	unsafeOpen();
 
 	if (_pRotateStrategy && _pArchiveStrategy && _pRotateStrategy->mustRotate(_pFile))
 	{
@@ -371,6 +356,27 @@ void FileChannel::purge()
 		}
 		catch (...)
 		{
+		}
+	}
+}
+
+
+void FileChannel::unsafeOpen()
+{
+	if (!_pFile)
+	{
+		_pFile = new LogFile(_path);
+		if (_rotateOnOpen && _pFile->size() > 0)
+		{
+			try
+			{
+				_pFile = _pArchiveStrategy->archive(_pFile);
+				purge();
+			}
+			catch (...)
+			{
+				_pFile = new LogFile(_path);
+			}
 		}
 	}
 }
