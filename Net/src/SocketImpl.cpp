@@ -332,7 +332,14 @@ int SocketImpl::sendBytes(const void* buffer, int length, int flags)
 		rc = ::send(_sockfd, reinterpret_cast<const char*>(buffer), length, flags);
 	}
 	while (_blocking && rc < 0 && lastError() == POCO_EINTR);
-	if (rc < 0) error();
+	if (rc < 0)
+	{
+		int err = lastError();
+		if (err == POCO_EAGAIN || err == POCO_ETIMEDOUT)
+			throw TimeoutException();
+		else
+			error(err);
+	}
 	return rc;
 }
 
