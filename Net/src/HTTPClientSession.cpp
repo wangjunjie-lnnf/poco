@@ -360,7 +360,7 @@ int HTTPClientSession::write(const char* buffer, std::streamsize length)
 		_reconnect = false;
 		return rc;
 	}
-	catch (IOException&)
+	catch (Poco::Exception&)
 	{
 		if (_reconnect)
 		{
