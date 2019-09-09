@@ -137,7 +137,6 @@ void TCPServerDispatcher::enqueue(const StreamSocket& socket)
 
 	if (_queue.size() < _pParams->getMaxQueued())
 	{
-		_queue.enqueueNotification(new TCPConnectionNotification(socket));
 		if (!_queue.hasIdleThreads() && _currentThreads < _pParams->getMaxThreads())
 		{
 			try
@@ -151,10 +150,11 @@ void TCPServerDispatcher::enqueue(const StreamSocket& socket)
 			}
 			catch (Poco::Exception&)
 			{
-				// no problem here, connection is already queued
-				// and a new thread might be available later.
+				++_refusedConnections;
+				return;
 			}
 		}
+		_queue.enqueueNotification(new TCPConnectionNotification(socket));
 	}
 	else
 	{
