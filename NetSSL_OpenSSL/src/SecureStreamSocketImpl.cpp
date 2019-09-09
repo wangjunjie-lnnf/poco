@@ -91,7 +91,7 @@ void SecureStreamSocketImpl::connectSSL()
 }
 	
 
-void SecureStreamSocketImpl::bind(const SocketAddress& address, bool reuseAddress)
+void SecureStreamSocketImpl::bind(const SocketAddress& address, bool reuseAddress, bool reusePort)
 {
 	throw Poco::InvalidAccessException("Cannot bind() a SecureStreamSocketImpl");
 }
