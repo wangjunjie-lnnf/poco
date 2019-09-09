@@ -248,7 +248,7 @@ static void BiggestPowerTen(uint32_t number,
   // Note: kPowersOf10[i] == 10^(i-1).
   exponent_plus_one_guess++;
   // We don't have any guarantees that 2^number_bits <= number.
-  if (number < kSmallPowersOfTen[exponent_plus_one_guess]) {
+  if (number < kSmallPowersOfTen[exponent_plus_one_guess] && exponent_plus_one_guess > 0) {
     exponent_plus_one_guess--;
   }
   *power = kSmallPowersOfTen[exponent_plus_one_guess];

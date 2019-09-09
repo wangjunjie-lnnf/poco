@@ -22,8 +22,8 @@ endif()
 # top of the build tree rather than in hard-to-find leaf
 # directories. This simplifies manual testing and the use of the build
 # tree rather than installed Boost libraries.
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+#set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+#set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 # Windows DLLs are "runtime" for CMake. Output them to "bin" like the Visual Studio projects do.
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
@@ -47,6 +47,8 @@ set (CMAKE_CXX_STANDARD_REQUIRED ON)
 
 option(POCO_DISABLE_CPP14 "Disable C++14 if not available" OFF)
 
+if (0) # no need in clickhouse
+
 if(NOT POCO_DISABLE_CPP14)
   # C++14 compiler flags
   include(CXX1x)
@@ -58,6 +60,8 @@ if(NOT POCO_DISABLE_CPP14)
   else()
     set(POCO_DISABLE_CPP14 ON CACHE BOOL "Disable C++14 if not available" FORCE)
   endif()
+endif()
+
 endif()
 
 if(NOT CMAKE_BUILD_TYPE)

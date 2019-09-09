@@ -37,5 +37,6 @@
 //
 #define POCO_VERSION 0x02000000
 
+#define POCO_CLICKHOUSE_PATCH 1
 
 #endif // Foundation_Version_INCLUDED
