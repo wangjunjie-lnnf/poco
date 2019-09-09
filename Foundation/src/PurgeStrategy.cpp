@@ -128,4 +128,26 @@ void PurgeByCountStrategy::purge(const std::string& path)
 }
 
 
+void PurgeOneFileStrategy::purge(const std::string& path)
+{
+	std::vector<File> files;
+	list(path, files);
+
+    if (files.empty())
+    {
+        File(path).setSize(0);
+        return;
+    }
+
+    auto purge_it = files.begin();
+    auto it = files.begin();
+    for (++it; it != files.end(); ++it)
+        if (it->getLastModified() < purge_it->getLastModified())
+            purge_it = it;
+
+	purge_it->remove();
+}
+
+
+
 } // namespace Poco
