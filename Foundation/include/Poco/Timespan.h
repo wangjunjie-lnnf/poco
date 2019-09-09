@@ -294,6 +294,11 @@ inline void swap(Timespan& s1, Timespan& s2)
 }
 
 
+inline Timespan::~Timespan()
+{
+}
+
+
 } // namespace Poco
 
 
