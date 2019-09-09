@@ -60,14 +60,25 @@ public:
 		/// The returned stream is valid until the response
 		/// object is destroyed.
 		///
-		/// Must not be called after sendFile(), sendBuffer() 
+		/// Must not be called after beginSend(), sendFile(), sendBuffer()
+		/// or redirect() has been called.
+
+	std::pair<std::ostream *, std::ostream *> beginSend();
+		/// Sends the response headers to the client
+		/// but do not finish headers with \r\n,
+		/// allowing to continue sending additional header fields.
+		///
+		/// Returns an output streams for sending the remaining headers
+		/// and response body.
+		///
+		/// Must not be called after send(), sendFile(), sendBuffer()
 		/// or redirect() has been called.
 		
 	void sendFile(const std::string& path, const std::string& mediaType);
 		/// Sends the response header to the client, followed
 		/// by the content of the given file.
 		///
-		/// Must not be called after send(), sendBuffer() 
+		/// Must not be called after send(), sendBuffer()
 		/// or redirect() has been called.
 		///
 		/// Throws a FileNotFoundException if the file
@@ -82,10 +93,10 @@ public:
 		/// to length and chunked transfer encoding is disabled.
 		///
 		/// If both the HTTP message header and body (from the
-		/// given buffer) fit into one single network packet, the 
+		/// given buffer) fit into one single network packet, the
 		/// complete response can be sent in one network packet.
 		///
-		/// Must not be called after send(), sendFile()  
+		/// Must not be called after send(), sendFile()
 		/// or redirect() has been called.
 		
 	void redirect(const std::string& uri, HTTPStatus status = HTTP_FOUND);
@@ -113,6 +124,7 @@ private:
 	HTTPServerSession& _session;
 	HTTPServerRequestImpl* _pRequest;
 	std::ostream*      _pStream;
+	std::ostream*      _pHeaderStream;
 	
 	friend class HTTPServerRequestImpl;
 };
