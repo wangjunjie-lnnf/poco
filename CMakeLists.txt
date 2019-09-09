@@ -30,8 +30,8 @@ set(CMAKE_C_STANDARD 99)
 # top of the build tree rather than in hard-to-find leaf
 # directories. This simplifies manual testing and the use of the build
 # tree rather than installed Boost libraries.
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+#set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+#set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 # Windows DLLs are "runtime" for CMake. Output them to "bin" like the Visual Studio projects do.
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
@@ -46,6 +46,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 option(DISABLE_CPP11 "Disable C++11 if available" OFF)
 option(DISABLE_CPP14 "Disable C++14 if available" OFF)
+
+if (0) # no need in clickhouse
 
 if (DISABLE_CPP11 OR DISABLE_CPP14)
     add_definitions(-DPOCO_DISABLE_CPP11)
@@ -68,6 +70,13 @@ else()
             enable_cxx14()
         endif()
     endif()
+endif()
+
+endif()
+
+if (NOT MSVC)
+    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-sign-compare -fno-strict-aliasing -Wno-unknown-pragmas")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-sign-compare  -fno-strict-aliasing -Wno-unknown-pragmas -Wno-non-virtual-dtor")
 endif()
 
 if(NOT MSVC_IDE)
