@@ -358,7 +358,7 @@ URI::QueryParameters URI::getQueryParameters() const
 		std::string value;
 		while (it != end && *it != '=' && *it != '&')
 		{
-			if (*it == '+') 
+			if (*it == '+')
 				name += ' ';
 			else
 				name += *it;
@@ -369,7 +369,7 @@ URI::QueryParameters URI::getQueryParameters() const
 			++it;
 			while (it != end && *it != '&')
 			{
-				if (*it == '+') 
+				if (*it == '+')
 					value += ' ';
 				else
 					value += *it;
@@ -498,7 +498,7 @@ void URI::resolve(const URI& relativeURI)
 			}
 		}
 	}
-	_fragment = relativeURI._fragment;      
+	_fragment = relativeURI._fragment;
 }
 
 
@@ -626,10 +626,10 @@ void URI::encode(const std::string& str, const std::string& reserved, std::strin
 	for (std::string::const_iterator it = str.begin(); it != str.end(); ++it)
 	{
 		char c = *it;
-		if ((c >= 'a' && c <= 'z') || 
-		    (c >= 'A' && c <= 'Z') || 
+		if ((c >= 'a' && c <= 'z') ||
+		    (c >= 'A' && c <= 'Z') ||
 		    (c >= '0' && c <= '9') ||
-		    c == '-' || c == '_' || 
+		    c == '-' || c == '_' ||
 		    c == '.' || c == '~')
 		{
 			encodedStr += c;
@@ -719,6 +719,11 @@ unsigned short URI::getWellKnownPort() const
 
 void URI::parse(const std::string& uri)
 {
+	std::for_each(uri.begin(), uri.end(), [] (char ch) {
+		if (static_cast<signed char>(ch) <= 32 || ch == '\x7F')
+			throw URISyntaxException("URI contains invalid characters");
+	});
+
 	std::string::const_iterator it  = uri.begin();
 	std::string::const_iterator end = uri.end();
 	if (it == end) return;
@@ -743,7 +748,7 @@ void URI::parse(const std::string& uri)
 			}
 			parsePathEtc(it, end);
 		}
-		else 
+		else
 		{
 			it = uri.begin();
 			parsePathEtc(it, end);
@@ -905,7 +910,7 @@ void URI::buildPath(const std::vector<std::string>& segments, bool leadingSlash,
 		else _path += '/';
 		_path.append(*it);
 	}
-	if (trailingSlash) 
+	if (trailingSlash)
 		_path += '/';
 }
 
