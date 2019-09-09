@@ -102,7 +102,7 @@ public:
 	void setCredentials(const std::string& scheme, const std::string& authInfo);
 		/// Sets the authentication scheme and information for
 		/// this request.
-
+		
 	bool getExpectContinue() const;
 		/// Returns true if the request contains an
 		/// "Expect: 100-continue" header.
@@ -130,7 +130,15 @@ public:
 		/// Writes the HTTP request to the given
 		/// output stream.
 
+#if __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Woverloaded-virtual"
+#endif
 	void read(std::istream& istr);
+#if __clang__
+#pragma clang diagnostic pop
+#endif
+
 		/// Reads the HTTP request from the
 		/// given input stream.
 		
