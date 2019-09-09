@@ -45,6 +45,7 @@ void HTTPStreamBuf::close()
 	if (_mode & std::ios::out)
 	{
 		sync();
+		if (!_session.getKeepAlive())
 		_session.socket().shutdownSend();
 	}
 }
