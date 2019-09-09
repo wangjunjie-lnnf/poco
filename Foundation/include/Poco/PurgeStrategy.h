@@ -93,6 +93,16 @@ private:
 };
 
 
+class Foundation_API PurgeOneFileStrategy: public PurgeStrategy
+	/// This purge strategy unconditionally purges one oldest file.
+	/// If there are no archived files, it will truncate current "hot" log file.
+	/// Intended usage: when there are no space left on device with logs.
+{
+public:
+	void purge(const std::string& path);
+};
+
+
 } // namespace Poco
 
 
