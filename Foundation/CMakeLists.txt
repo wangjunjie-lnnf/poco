@@ -83,11 +83,8 @@ option(POCO_UNBUNDLED_ZLIB
   "Set to OFF|ON (default is OFF) to control linking zlib as external" ${POCO_UNBUNDLED})
 
 if (POCO_UNBUNDLED_ZLIB)
-	find_package(ZLIB REQUIRED)
+	find_package(ZLIB)
 	set(SYSLIBS ${SYSLIBS} ${ZLIB_LIBRARIES})
-	include_directories(${ZLIB_INCLUDE_DIRS})
-
-	add_definitions(-DPOCO_UNBUNDLED_ZLIB)
 else()
 
 	# zlib
@@ -121,9 +118,14 @@ set_target_properties(Foundation
 	)
 
 if (POCO_UNBUNDLED)
-    target_link_libraries(Foundation PUBLIC Pcre::Pcre ZLIB::ZLIB)
+    target_link_libraries(Foundation PUBLIC Pcre::Pcre)
     target_compile_definitions(Foundation PUBLIC POCO_UNBUNDLED)
 endif (POCO_UNBUNDLED)
+
+if (POCO_UNBUNDLED_ZLIB)
+    target_include_directories(Foundation PUBLIC ${ZLIB_INCLUDE_DIRS})
+    target_compile_definitions(Foundation PUBLIC POCO_UNBUNDLED_ZLIB)
+endif ()
 
 target_include_directories(Foundation
 	PUBLIC

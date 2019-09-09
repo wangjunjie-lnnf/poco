@@ -11,7 +11,7 @@ POCO_HEADERS_AUTO( SRCS ${HDRS_G})
 option(POCO_UNBUNDLED_ZLIB
   "Set to OFF|ON (default is OFF) to control linking dependencies as external" ${POCO_UNBUNDLED})
 if (POCO_UNBUNDLED_ZLIB)
-    find_package(ZLIB REQUIRED)
+    find_package(ZLIB)
 else()
     # zlib
     POCO_SOURCES( SRCS zlib
