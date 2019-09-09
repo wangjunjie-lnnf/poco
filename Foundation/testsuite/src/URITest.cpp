@@ -11,12 +11,14 @@
 #include "URITest.h"
 #include "Poco/CppUnit/TestCaller.h"
 #include "Poco/CppUnit/TestSuite.h"
+#include "Poco/Exception.h"
 #include "Poco/URI.h"
 #include "Poco/Path.h"
 
 
 using Poco::URI;
 using Poco::Path;
+using std::string_literals::operator""s;
 
 
 URITest::URITest(const std::string& rName): CppUnit::TestCase(rName)
@@ -172,6 +174,16 @@ void URITest::testParse()
 	assertTrue (uri.getQuery().empty());
 	assertTrue (uri.getFragment().empty());
 	assertTrue (!uri.isRelative());
+
+	// security testing (Illegal Characters)
+
+	try {
+		uri = "http\r\n\f\t ://ww\0w.\fappinf\r\n\f\t .com"s;
+		fail("URI contains invalid characters - must throw");
+	}
+	catch (Poco::URISyntaxException&)
+	{
+	}
 
 	uri = "http://www.appinf.com/";
 	assertTrue (uri.getScheme() == "http");
