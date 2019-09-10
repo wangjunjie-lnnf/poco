@@ -27,6 +27,7 @@
 #include <vector>
 #include <cstddef>
 #include <memory>
+#include <atomic>
 
 
 namespace Poco {
@@ -470,7 +471,7 @@ private:
 
 	std::string  _name;
 	Channel::Ptr _pChannel;
-	int          _level;
+	std::atomic_int   _level;
 
 	// definitions in Foundation.cpp
 	static LoggerMapPtr _pLoggerMap;
