@@ -27,6 +27,7 @@
 #include <map>
 #include <vector>
 #include <cstddef>
+#include <atomic>
 
 
 namespace Poco {
@@ -507,7 +508,7 @@ private:
 	
 	std::string _name;
 	Channel*    _pChannel;
-	int         _level;
+	std::atomic_int   _level;
 
 	static LoggerMap* _pLoggerMap;
 	static Mutex      _mapMtx;
