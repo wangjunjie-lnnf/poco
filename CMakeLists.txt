@@ -44,10 +44,13 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 # Setup C/C++ compiler options
 #################################################################################
 
+include(CXX1x)
+enable_cxx14()
+
+if (0) # no need in clickhouse, just enable cxx14 always
+
 option(DISABLE_CPP11 "Disable C++11 if available" OFF)
 option(DISABLE_CPP14 "Disable C++14 if available" OFF)
-
-if (0) # no need in clickhouse
 
 if (DISABLE_CPP11 OR DISABLE_CPP14)
     add_definitions(-DPOCO_DISABLE_CPP11)
