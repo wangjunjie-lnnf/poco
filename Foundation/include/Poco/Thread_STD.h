@@ -31,7 +31,9 @@
 
 
 #ifdef __APPLE__
+#if (__cplusplus < 201103L)
 #define thread_local __thread
+#endif
 #elif defined(_MSC_VER)
 #include "Poco/UnWindows.h"
 #endif
