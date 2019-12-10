@@ -613,14 +613,13 @@ int SocketImpl::getReceiveBufferSize()
 
 void SocketImpl::setSendTimeout(const Poco::Timespan& timeout)
 {
-#if defined(_WIN32) && !defined(POCO_BROKEN_TIMEOUTS)
+#if defined(_WIN32)
 	int value = (int) timeout.totalMilliseconds();
 	setOption(SOL_SOCKET, SO_SNDTIMEO, value);
-#elif !defined(POCO_BROKEN_TIMEOUTS)
+#else
 	setOption(SOL_SOCKET, SO_SNDTIMEO, timeout);
 #endif
-	if (_isBrokenTimeout)
-		_sndTimeout = timeout;
+	_sndTimeout = timeout;
 }
 
 
@@ -642,16 +641,13 @@ Poco::Timespan SocketImpl::getSendTimeout()
 
 void SocketImpl::setReceiveTimeout(const Poco::Timespan& timeout)
 {
-#ifndef POCO_BROKEN_TIMEOUTS
 #if defined(_WIN32)
 	int value = (int) timeout.totalMilliseconds();
 	setOption(SOL_SOCKET, SO_RCVTIMEO, value);
 #else
 	setOption(SOL_SOCKET, SO_RCVTIMEO, timeout);
 #endif
-#endif
-	if (_isBrokenTimeout)
-		_recvTimeout = timeout;
+	_recvTimeout = timeout;
 }
 
 
