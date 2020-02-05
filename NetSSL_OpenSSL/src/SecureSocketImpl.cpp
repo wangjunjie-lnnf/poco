@@ -277,11 +277,13 @@ int SecureSocketImpl::sendBytes(const void* buffer, int length, int flags)
 		else
 			return rc;
 	}
+
+    Poco::Timespan remaining_time = getMaxTimeout();
 	do
 	{
 		rc = SSL_write(_pSSL, buffer, length);
 	}
-	while (mustRetry(rc));
+	while (mustRetry(rc, remaining_time));
 	if (rc <= 0)
 	{
 		rc = handleError(rc);
@@ -305,11 +307,13 @@ int SecureSocketImpl::receiveBytes(void* buffer, int length, int flags)
 		else
 			return rc;
 	}
+
+    Poco::Timespan remaining_time = getMaxTimeout();
 	do
 	{
 		rc = SSL_read(_pSSL, buffer, length);
 	}
-	while (mustRetry(rc));
+	while (mustRetry(rc, remaining_time));
 	if (rc <= 0)
 	{
 		return handleError(rc);
@@ -332,11 +336,12 @@ int SecureSocketImpl::completeHandshake()
 	poco_check_ptr (_pSSL);
 
 	int rc;
+    Poco::Timespan remaining_time = getMaxTimeout();
 	do
 	{
 		rc = SSL_do_handshake(_pSSL);
 	}
-	while (mustRetry(rc));
+	while (mustRetry(rc, remaining_time));
 	if (rc <= 0)
 	{
 		return handleError(rc);
@@ -407,8 +412,16 @@ X509* SecureSocketImpl::peerCertificate() const
 		return 0;
 }
 
+Poco::Timespan SecureSocketImpl::getMaxTimeout()
+{
+    Poco::Timespan remaining_time = _pSocket->getReceiveTimeout();
+    Poco::Timespan send_timeout = _pSocket->getSendTimeout();
+    if (remaining_time < send_timeout)
+        remaining_time = send_timeout;
+    return remaining_time;
+}
 
-bool SecureSocketImpl::mustRetry(int rc)
+bool SecureSocketImpl::mustRetry(int rc, Poco::Timespan& remaining_time)
 {
 	if (rc <= 0)
 	{
@@ -419,7 +432,7 @@ bool SecureSocketImpl::mustRetry(int rc)
 		case SSL_ERROR_WANT_READ:
 			if (_pSocket->getBlocking())
 			{
-				if (_pSocket->poll(_pSocket->getReceiveTimeout(), Poco::Net::Socket::SELECT_READ))
+				if (_pSocket->pollImpl(remaining_time, Poco::Net::Socket::SELECT_READ))
 					return true;
 				else
 					throw Poco::TimeoutException();
@@ -428,7 +441,7 @@ bool SecureSocketImpl::mustRetry(int rc)
 		case SSL_ERROR_WANT_WRITE:
 			if (_pSocket->getBlocking())
 			{
-				if (_pSocket->poll(_pSocket->getSendTimeout(), Poco::Net::Socket::SELECT_WRITE))
+				if (_pSocket->pollImpl(remaining_time, Poco::Net::Socket::SELECT_WRITE))
 					return true;
 				else
 					throw Poco::TimeoutException();

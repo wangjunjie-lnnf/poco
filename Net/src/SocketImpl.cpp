@@ -433,7 +433,7 @@ bool SocketImpl::secure() const
 }
 
 
-bool SocketImpl::poll(const Poco::Timespan& timeout, int mode)
+bool SocketImpl::pollImpl(Poco::Timespan& remainingTime, int mode)
 {
 	poco_socket_t sockfd = _sockfd;
 	if (sockfd == POCO_INVALID_SOCKET) throw InvalidSocketException();
@@ -462,7 +462,6 @@ bool SocketImpl::poll(const Poco::Timespan& timeout, int mode)
 		error("Can't insert socket to epoll queue");
 	}
 
-	Poco::Timespan remainingTime(timeout);
 	int rc;
 	do
 	{
@@ -496,7 +495,6 @@ bool SocketImpl::poll(const Poco::Timespan& timeout, int mode)
 	if (mode & SELECT_READ) pollBuf.events |= POLLIN;
 	if (mode & SELECT_WRITE) pollBuf.events |= POLLOUT;
 
-	Poco::Timespan remainingTime(timeout);
 	int rc;
 	do
 	{
@@ -537,7 +535,6 @@ bool SocketImpl::poll(const Poco::Timespan& timeout, int mode)
 	{
 		FD_SET(sockfd, &fdExcept);
 	}
-	Poco::Timespan remainingTime(timeout);
 	int errorCode = POCO_ENOERR;
 	int rc;
 	do
@@ -564,6 +561,11 @@ bool SocketImpl::poll(const Poco::Timespan& timeout, int mode)
 #endif // POCO_HAVE_FD_EPOLL
 }
 
+bool SocketImpl::poll(const Poco::Timespan& timeout, int mode)
+{
+	Poco::Timespan remainingTime(timeout);
+    return pollImpl(remainingTime, mode);
+}
 	
 void SocketImpl::setSendBufferSize(int size)
 {
