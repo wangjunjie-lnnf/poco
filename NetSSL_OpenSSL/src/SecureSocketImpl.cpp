@@ -119,6 +119,8 @@ void SecureSocketImpl::connect(const SocketAddress& address, const Poco::Timespa
 	poco_assert (!_pSSL);
 
 	_pSocket->connect(address, timeout);
+	//FIXME it updates timeouts of SecureStreamSocketImpl::underlying_socket it does not update timeouts of SecureStreamSocketImpl
+	//However, timeouts of SecureStreamSocketImpl are not used in connectSSL() and previous settings are restored after
 	Poco::Timespan receiveTimeout = _pSocket->getReceiveTimeout();
 	Poco::Timespan sendTimeout = _pSocket->getSendTimeout();
 	_pSocket->setReceiveTimeout(timeout);

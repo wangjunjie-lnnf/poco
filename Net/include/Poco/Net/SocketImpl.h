@@ -447,7 +447,7 @@ protected:
 	static void error(int code, const std::string& arg);
 		/// Throws an appropriate exception for the given error code.
 
-private:
+protected:
 	SocketImpl(const SocketImpl&);
 	SocketImpl& operator = (const SocketImpl&);
 
