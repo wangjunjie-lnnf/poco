@@ -221,7 +221,7 @@ protected:
 		/// Note that simply closing a socket is not sufficient
 		/// to be able to re-use it again.
 
-    Poco::Timespan getMaxTimeout();
+	Poco::Timespan getMaxTimeout();
 
 private:	
 	SecureSocketImpl(const SecureSocketImpl&);

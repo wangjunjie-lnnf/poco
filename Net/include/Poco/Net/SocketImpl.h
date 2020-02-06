@@ -213,8 +213,8 @@ public:
 		/// Returns true if the next operation corresponding to
 		/// mode will not block, false otherwise.
 
-    bool pollImpl(Poco::Timespan& timeout, int mode);
-        /// Modifies `timeout`
+	bool pollImpl(Poco::Timespan& timeout, int mode);
+		/// Modifies `timeout`
 
 	virtual void setSendBufferSize(int size);
 		/// Sets the size of the send buffer.

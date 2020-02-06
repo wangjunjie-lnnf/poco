@@ -564,7 +564,7 @@ bool SocketImpl::pollImpl(Poco::Timespan& remainingTime, int mode)
 bool SocketImpl::poll(const Poco::Timespan& timeout, int mode)
 {
 	Poco::Timespan remainingTime(timeout);
-    return pollImpl(remainingTime, mode);
+	return pollImpl(remainingTime, mode);
 }
 	
 void SocketImpl::setSendBufferSize(int size)
