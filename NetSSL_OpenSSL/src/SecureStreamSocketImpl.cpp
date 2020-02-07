@@ -22,14 +22,16 @@ namespace Net {
 
 
 SecureStreamSocketImpl::SecureStreamSocketImpl(Context::Ptr pContext):
-	_impl(new StreamSocketImpl, pContext),
+    underlying_socket(new StreamSocketImpl),
+	_impl(underlying_socket, pContext),
 	_lazyHandshake(false)
 {
 }
 
 
 SecureStreamSocketImpl::SecureStreamSocketImpl(StreamSocketImpl* pStreamSocket, Context::Ptr pContext):
-	_impl(pStreamSocket, pContext),
+    underlying_socket(pStreamSocket),
+	_impl(underlying_socket, pContext),
 	_lazyHandshake(false)
 {
 	pStreamSocket->duplicate();
@@ -49,6 +51,17 @@ SecureStreamSocketImpl::~SecureStreamSocketImpl()
 	}
 }
 
+void SecureStreamSocketImpl::setSendTimeout(const Poco::Timespan& timeout)
+{
+    underlying_socket->setSendTimeout(timeout);
+    _sndTimeout = underlying_socket->getSendTimeout();
+}
+
+void SecureStreamSocketImpl::setReceiveTimeout(const Poco::Timespan& timeout)
+{
+    underlying_socket->setReceiveTimeout(timeout);
+    _recvTimeout = underlying_socket->getReceiveTimeout();
+}
 
 SocketImpl* SecureStreamSocketImpl::acceptConnection(SocketAddress& clientAddr)
 {

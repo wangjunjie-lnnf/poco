@@ -195,7 +195,7 @@ protected:
 		/// Returns true iff the given host name is the local host
 		/// (either "localhost" or "127.0.0.1").
 
-	bool mustRetry(int rc);
+	bool mustRetry(int rc, Poco::Timespan& remaining_time);
 		/// Returns true if the last operation should be retried,
 		/// otherwise false.
 		///
@@ -220,6 +220,8 @@ protected:
 		///
 		/// Note that simply closing a socket is not sufficient
 		/// to be able to re-use it again.
+
+	Poco::Timespan getMaxTimeout();
 
 private:	
 	SecureSocketImpl(const SecureSocketImpl&);
