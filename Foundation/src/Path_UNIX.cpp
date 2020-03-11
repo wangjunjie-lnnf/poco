@@ -56,12 +56,25 @@ std::string PathImpl::homeImpl()
 		return "/";
 #else
 	std::string path;
+#if defined(_POSIX_C_SOURCE) || defined(_BSD_SOURCE) || defined(_POSIX_C_SOURCE)
+	size_t buf_size = 1024;     // Same as glibc use for getpwuid
+	std::vector<char> buf(buf_size);
+	struct passwd res;
+	struct passwd* pwd = nullptr;
+
+	getpwuid_r(getuid(), &res, buf.data(), buf_size, &pwd);
+#else
 	struct passwd* pwd = getpwuid(getuid());
+#endif
 	if (pwd)
 		path = pwd->pw_dir;
 	else
 	{
+#if defined(_POSIX_C_SOURCE) || defined(_BSD_SOURCE) || defined(_POSIX_C_SOURCE)
+		getpwuid_r(getuid(), &res, buf.data(), buf_size, &pwd);
+#else
 		pwd = getpwuid(geteuid());
+#endif
 		if (pwd)
 			path = pwd->pw_dir;
 		else
