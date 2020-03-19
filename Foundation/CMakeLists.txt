@@ -173,6 +173,13 @@ set_target_properties( "${LIBNAME}"
 	)
 
 target_link_libraries( "${LIBNAME}" ${SYSLIBS})
+
+# Add -lrt because it is required to use clock_getres on glibc before 2.17.
+# (we have a "Compatibility check" in CI that checks older glibc.)
+if(NOT APPLE)
+    target_link_libraries( "${LIBNAME}" "-lrt")
+endif()
+
 target_include_directories( "${LIBNAME}"
 	SYSTEM PUBLIC
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
