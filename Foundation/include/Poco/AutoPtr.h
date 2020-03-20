@@ -122,7 +122,7 @@ public:
 		{
 			if (_ptr) _ptr->release();
 			_ptr = ptr._ptr;
-			if (_ptr) _ptr->duplicate();
+			if (_ptr) _ptr->duplicate(); // NOLINT
 		}
 		return *this;
 	}
@@ -236,14 +236,14 @@ public:
 
 	operator C* ()
 	{
-		return _ptr;
+		return _ptr; // NOLINT
 	}
-	
+
 	operator const C* () const
 	{
 		return _ptr;
 	}
-	
+
 	bool operator ! () const
 	{
 		return _ptr == 0;
@@ -253,7 +253,7 @@ public:
 	{
 		return _ptr == 0;
 	}
-	
+
 	C* duplicate()
 	{
 		if (_ptr) _ptr->duplicate();
