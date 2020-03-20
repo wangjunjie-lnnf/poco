@@ -47,7 +47,7 @@ class AutoPtr
 	/// AutoPtr works in the following way:
 	/// If an AutoPtr is assigned an ordinary pointer to
 	/// an object (via the constructor or the assignment operator),
-	/// it takes ownership of the object and the object's reference 
+	/// it takes ownership of the object and the object's reference
 	/// count remains unchanged.
 	/// If the AutoPtr is assigned another AutoPtr, the
 	/// object's reference count is incremented by one by
@@ -79,7 +79,7 @@ public:
 		if (_ptr) _ptr->duplicate(); // NOLINT
 	}
 
-	template <class Other> 
+	template <class Other>
 	AutoPtr(const AutoPtr<Other>& ptr): _ptr(const_cast<Other*>(ptr.get()))
 	{
 		if (_ptr) _ptr->duplicate();
@@ -89,7 +89,7 @@ public:
 	{
 		if (_ptr) _ptr->release(); // NOLINT
 	}
-	
+
 	AutoPtr& assign(C* ptr)
 	{
 		if (_ptr != ptr)
@@ -110,19 +110,19 @@ public:
 		}
 		return *this;
 	}
-	
+
 	AutoPtr& assign(const AutoPtr& ptr)
 	{
 		if (&ptr != this)
 		{
 			if (_ptr) _ptr->release();
 			_ptr = ptr._ptr;
-			if (_ptr) _ptr->duplicate();
+			if (_ptr) _ptr->duplicate(); // NOLINT
 		}
 		return *this;
 	}
-	
-	template <class Other> 
+
+	template <class Other>
 	AutoPtr& assign(const AutoPtr<Other>& ptr)
 	{
 		if (ptr.get() != _ptr)
@@ -173,8 +173,8 @@ public:
 	{
 		return assign(ptr);
 	}
-	
-	template <class Other> 
+
+	template <class Other>
 	AutoPtr& operator = (const AutoPtr<Other>& ptr)
 	{
 		return assign<Other>(ptr);
@@ -184,8 +184,8 @@ public:
 	{
 		std::swap(_ptr, ptr._ptr);
 	}
-	
-	template <class Other> 
+
+	template <class Other>
 	AutoPtr<Other> cast() const
 		/// Casts the AutoPtr via a dynamic cast to the given type.
 		/// Returns an AutoPtr containing NULL if the cast fails.
@@ -198,7 +198,7 @@ public:
 		return AutoPtr<Other>(pOther, true);
 	}
 
-	template <class Other> 
+	template <class Other>
 	AutoPtr<Other> unsafeCast() const
 		/// Casts the AutoPtr via a static cast to the given type.
 		/// Example: (assume class Sub: public Super)
@@ -254,14 +254,14 @@ public:
 
 	operator C* ()
 	{
-		return _ptr;
+		return _ptr; // NOLINT
 	}
-	
+
 	operator const C* () const
 	{
 		return _ptr;
 	}
-	
+
 	bool operator ! () const
 	{
 		return _ptr == 0;
@@ -271,7 +271,7 @@ public:
 	{
 		return _ptr == 0;
 	}
-	
+
 	C* duplicate()
 	{
 		if (_ptr) _ptr->duplicate();
