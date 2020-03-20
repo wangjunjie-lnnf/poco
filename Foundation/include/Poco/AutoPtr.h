@@ -76,7 +76,7 @@ public:
 
 	AutoPtr(const AutoPtr& ptr): _ptr(ptr._ptr)
 	{
-		if (_ptr) _ptr->duplicate();
+		if (_ptr) _ptr->duplicate(); // NOLINT
 	}
 
 	template <class Other> 
@@ -87,7 +87,7 @@ public:
 
 	~AutoPtr()
 	{
-		if (_ptr) _ptr->release();
+		if (_ptr) _ptr->release(); // NOLINT
 	}
 	
 	AutoPtr& assign(C* ptr)
@@ -213,7 +213,7 @@ public:
 	C* operator -> ()
 	{
 		if (_ptr)
-			return _ptr;
+			return _ptr; // NOLINT
 		else
 			throw NullPointerException();
 	}
