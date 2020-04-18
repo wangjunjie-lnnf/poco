@@ -229,7 +229,7 @@ public:
 	C& operator * ()
 	{
 		if (_ptr)
-			return *_ptr;
+			return *_ptr; // NOLINT
 		else
 			throw NullPointerException();
 	}
