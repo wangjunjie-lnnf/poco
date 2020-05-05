@@ -323,7 +323,8 @@ int SocketImpl::sendBytes(const void* buffer, int length, int flags)
 
 int SocketImpl::receiveBytes(void* buffer, int length, int flags)
 {
-	if (_isBrokenTimeout)
+	bool dont_wait = flags & MSG_DONTWAIT;
+	if (_isBrokenTimeout && !dont_wait)
 	{
 		if (_recvTimeout.totalMicroseconds() != 0)
 		{

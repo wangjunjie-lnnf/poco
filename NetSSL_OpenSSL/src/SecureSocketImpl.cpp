@@ -322,6 +322,10 @@ int SecureSocketImpl::receiveBytes(void* buffer, int length, int flags)
 	poco_assert (_pSocket->initialized());
 	poco_check_ptr (_pSSL);
 
+	/// Special case: just check that we can read from socket
+	if ((flags & MSG_DONTWAIT) && (flags & MSG_PEEK))
+		return _pSocket->receiveBytes(buffer, length, flags);
+
 	int rc;
 	if (_needHandshake)
 	{
