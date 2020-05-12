@@ -389,7 +389,7 @@ void DNS::aierror(int code, const std::string& arg)
 		throw HostNotFoundException(arg);
 #endif
 	default:
-		throw DNSException("EAI", NumberFormatter::format(code));
+		throw DNSException("EAI", gai_strerror(code));
 	}
 #endif // POCO_HAVE_IPv6 || defined(POCO_HAVE_ADDRINFO)
 }
