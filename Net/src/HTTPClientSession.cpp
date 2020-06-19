@@ -48,7 +48,7 @@ HTTPClientSession::HTTPClientSession():
 	_expectResponseBody(false),
 	_responseReceived(false)
 {
-    _proxySessionFactory.registerProtocol("http", new HTTPSessionInstantiator);
+	_proxySessionFactory.registerProtocol("http", new HTTPSessionInstantiator);
 }
 
 
@@ -62,7 +62,7 @@ HTTPClientSession::HTTPClientSession(const StreamSocket& socket):
 	_expectResponseBody(false),
 	_responseReceived(false)
 {
-    _proxySessionFactory.registerProtocol("http", new HTTPSessionInstantiator);
+	_proxySessionFactory.registerProtocol("http", new HTTPSessionInstantiator);
 }
 
 
@@ -76,7 +76,7 @@ HTTPClientSession::HTTPClientSession(const SocketAddress& address):
 	_expectResponseBody(false),
 	_responseReceived(false)
 {
-    _proxySessionFactory.registerProtocol("http", new HTTPSessionInstantiator);
+	_proxySessionFactory.registerProtocol("http", new HTTPSessionInstantiator);
 }
 
 
@@ -90,7 +90,7 @@ HTTPClientSession::HTTPClientSession(const std::string& host, Poco::UInt16 port)
 	_expectResponseBody(false),
 	_responseReceived(false)
 {
-    _proxySessionFactory.registerProtocol("http", new HTTPSessionInstantiator);
+	_proxySessionFactory.registerProtocol("http", new HTTPSessionInstantiator);
 }
 
 
@@ -104,13 +104,13 @@ HTTPClientSession::HTTPClientSession(const std::string& host, Poco::UInt16 port,
 	_expectResponseBody(false),
 	_responseReceived(false)
 {
-    _proxySessionFactory.registerProtocol("http", new HTTPSessionInstantiator);
+	_proxySessionFactory.registerProtocol("http", new HTTPSessionInstantiator);
 }
 
 
 HTTPClientSession::~HTTPClientSession()
 {
-    _proxySessionFactory.unregisterProtocol("http");
+	_proxySessionFactory.unregisterProtocol("http");
 }
 
 
@@ -134,8 +134,8 @@ void HTTPClientSession::setPort(Poco::UInt16 port)
 
 void HTTPClientSession::setProxy(const std::string& host, Poco::UInt16 port, const std::string& protocol, bool tunnel)
 {
-    if (protocol != "http" && protocol != "https")
-        throw IllegalStateException("Protocol must be either http or https");
+	if (protocol != "http" && protocol != "https")
+		throw IllegalStateException("Protocol must be either http or https");
 
 	if (!connected())
 	{
@@ -168,23 +168,22 @@ void HTTPClientSession::setProxyPort(Poco::UInt16 port)
 
 void HTTPClientSession::setProxyProtocol(const std::string& protocol)
 {
-    if (protocol != "http" && protocol != "https")
-        throw IllegalStateException("Protocol must be either http or https");
-
-    if (!connected())
-        _proxyConfig.protocol = protocol;
-    else
-        throw IllegalStateException("Cannot set the proxy port number for an already connected session");
+	if (protocol != "http" && protocol != "https")
+		throw IllegalStateException("Protocol must be either http or https");
+	
+	if (!connected())
+		_proxyConfig.protocol = protocol;
+	else
+		throw IllegalStateException("Cannot set the proxy port number for an already connected session");
 }
 
 
 void HTTPClientSession::setProxyTunnel(bool tunnel)
 {
-    if (!connected())
-        _proxyConfig.tunnel = tunnel;
-    else
-        throw IllegalStateException("Cannot set the proxy tunnel for an already connected session");
-
+	if (!connected())
+		_proxyConfig.tunnel = tunnel;
+	else
+		throw IllegalStateException("Cannot set the proxy tunnel for an already connected session");
 }
 
 
@@ -465,9 +464,9 @@ void HTTPClientSession::proxyAuthenticateImpl(HTTPRequest& request)
 StreamSocket HTTPClientSession::proxyConnect()
 {
 	URI proxyUri;
-    proxyUri.setScheme(getProxyProtocol());
-    proxyUri.setHost(getProxyHost());
-    proxyUri.setPort(getProxyPort());
+	proxyUri.setScheme(getProxyProtocol());
+	proxyUri.setHost(getProxyHost());
+	proxyUri.setPort(getProxyPort());
 
 	SharedPtr<HTTPClientSession> proxySession (HTTPSessionFactory::defaultFactory().createClientSession(proxyUri));
 
@@ -504,5 +503,6 @@ bool HTTPClientSession::bypassProxy() const
 	}
 	else return false;
 }
+
 
 } } // namespace Poco::Net

@@ -76,10 +76,10 @@ public:
 		Poco::UInt16 port;
 			/// Proxy server TCP port.
 		std::string  protocol;
-		    /// Protocol to use (http or https).
-        bool tunnel;
-            /// Use proxy as tunnel (establish 2-way communication through CONNECT request).
-            /// If tunnel option is 'false' request will be send directly to proxy without CONNECT request.
+			/// Protocol to use (http or https).
+		bool tunnel;
+			/// Use proxy as tunnel (establish 2-way communication through CONNECT request).
+			/// If tunnel option is 'false' request will be send directly to proxy without CONNECT request.
 		std::string  username;
 			/// Proxy server username.
 		std::string  password;
@@ -139,7 +139,7 @@ public:
 		/// Sets the port number of the proxy server.
 
 	void setProxyProtocol(const std::string& protocol);
-	    /// Sets the proxy protocol (http or https).
+		/// Sets the proxy protocol (http or https).
 
 	void setProxyTunnel(bool tunnel);
 		/// If 'true' proxy will be used as tunnel.
@@ -151,7 +151,7 @@ public:
 		/// Returns the proxy port number.
 
 	const std::string& getProxyProtocol() const;
-	    /// Returns the proxy protocol.
+		/// Returns the proxy protocol.
 
 	bool isProxyTunnel() const;
 		/// Returns 'true' if proxy is configured as tunnel.
@@ -324,8 +324,8 @@ protected:
 		/// Calls proxyConnect() and attaches the resulting StreamSocket
 		/// to the HTTPClientSession.
 
-    HTTPSessionFactory _proxySessionFactory;
-        /// Factory to create HTTPClientSession to proxy.
+	HTTPSessionFactory _proxySessionFactory;
+		/// Factory to create HTTPClientSession to proxy.
 private:
 	std::string     _host;
 	Poco::UInt16    _port;
@@ -377,7 +377,7 @@ inline Poco::UInt16 HTTPClientSession::getProxyPort() const
 
 inline const std::string& HTTPClientSession::getProxyProtocol() const
 {
-    return _proxyConfig.protocol;
+	return _proxyConfig.protocol;
 }
 
 
