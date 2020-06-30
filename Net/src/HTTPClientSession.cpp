@@ -13,6 +13,7 @@
 
 
 #include "Poco/Net/HTTPClientSession.h"
+#include "Poco/Net/HTTPSessionInstantiator.h"
 #include "Poco/Net/HTTPRequest.h"
 #include "Poco/Net/HTTPResponse.h"
 #include "Poco/Net/HTTPHeaderStream.h"
@@ -47,6 +48,7 @@ HTTPClientSession::HTTPClientSession():
 	_expectResponseBody(false),
 	_responseReceived(false)
 {
+	_proxySessionFactory.registerProtocol("http", new HTTPSessionInstantiator);
 }
 
 
@@ -60,6 +62,7 @@ HTTPClientSession::HTTPClientSession(const StreamSocket& socket):
 	_expectResponseBody(false),
 	_responseReceived(false)
 {
+	_proxySessionFactory.registerProtocol("http", new HTTPSessionInstantiator);
 }
 
 
@@ -73,6 +76,7 @@ HTTPClientSession::HTTPClientSession(const SocketAddress& address):
 	_expectResponseBody(false),
 	_responseReceived(false)
 {
+	_proxySessionFactory.registerProtocol("http", new HTTPSessionInstantiator);
 }
 
 
@@ -86,6 +90,7 @@ HTTPClientSession::HTTPClientSession(const std::string& host, Poco::UInt16 port)
 	_expectResponseBody(false),
 	_responseReceived(false)
 {
+	_proxySessionFactory.registerProtocol("http", new HTTPSessionInstantiator);
 }
 
 
@@ -99,11 +104,13 @@ HTTPClientSession::HTTPClientSession(const std::string& host, Poco::UInt16 port,
 	_expectResponseBody(false),
 	_responseReceived(false)
 {
+	_proxySessionFactory.registerProtocol("http", new HTTPSessionInstantiator);
 }
 
 
 HTTPClientSession::~HTTPClientSession()
 {
+	_proxySessionFactory.unregisterProtocol("http");
 }
 
 
@@ -125,14 +132,19 @@ void HTTPClientSession::setPort(Poco::UInt16 port)
 }
 
 
-void HTTPClientSession::setProxy(const std::string& host, Poco::UInt16 port)
+void HTTPClientSession::setProxy(const std::string& host, Poco::UInt16 port, const std::string& protocol, bool tunnel)
 {
+	if (protocol != "http" && protocol != "https")
+		throw IllegalStateException("Protocol must be either http or https");
+
 	if (!connected())
 	{
 		_proxyConfig.host = host;
 		_proxyConfig.port = port;
+		_proxyConfig.protocol = protocol;
+		_proxyConfig.tunnel = tunnel;
 	}
-	else throw IllegalStateException("Cannot set the proxy host and port for an already connected session");
+	else throw IllegalStateException("Cannot set the proxy host, port and protocol for an already connected session");
 }
 
 
@@ -151,6 +163,27 @@ void HTTPClientSession::setProxyPort(Poco::UInt16 port)
 		_proxyConfig.port = port;
 	else
 		throw IllegalStateException("Cannot set the proxy port number for an already connected session");
+}
+
+
+void HTTPClientSession::setProxyProtocol(const std::string& protocol)
+{
+	if (protocol != "http" && protocol != "https")
+		throw IllegalStateException("Protocol must be either http or https");
+	
+	if (!connected())
+		_proxyConfig.protocol = protocol;
+	else
+		throw IllegalStateException("Cannot set the proxy port number for an already connected session");
+}
+
+
+void HTTPClientSession::setProxyTunnel(bool tunnel)
+{
+	if (!connected())
+		_proxyConfig.tunnel = tunnel;
+	else
+		throw IllegalStateException("Cannot set the proxy tunnel for an already connected session");
 }
 
 
@@ -430,23 +463,28 @@ void HTTPClientSession::proxyAuthenticateImpl(HTTPRequest& request)
 
 StreamSocket HTTPClientSession::proxyConnect()
 {
-	ProxyConfig emptyProxyConfig;
-	HTTPClientSession proxySession(getProxyHost(), getProxyPort(), emptyProxyConfig);
-	proxySession.setTimeout(getTimeout());
+	URI proxyUri;
+	proxyUri.setScheme(getProxyProtocol());
+	proxyUri.setHost(getProxyHost());
+	proxyUri.setPort(getProxyPort());
+
+	SharedPtr<HTTPClientSession> proxySession (_proxySessionFactory.createClientSession(proxyUri));
+
+	proxySession->setTimeout(getTimeout());
 	std::string targetAddress(_host);
 	targetAddress.append(":");
 	NumberFormatter::append(targetAddress, _port);
 	HTTPRequest proxyRequest(HTTPRequest::HTTP_CONNECT, targetAddress, HTTPMessage::HTTP_1_1);
 	HTTPResponse proxyResponse;
 	proxyRequest.set("Proxy-Connection", "keep-alive");
-	proxyRequest.set("Host", getHost());
+	proxyRequest.set("Host", targetAddress);
 	proxyAuthenticateImpl(proxyRequest);
-	proxySession.setKeepAlive(true);
-	proxySession.sendRequest(proxyRequest);
-	proxySession.receiveResponse(proxyResponse);
+	proxySession->setKeepAlive(true);
+	proxySession->sendRequest(proxyRequest);
+	proxySession->receiveResponse(proxyResponse);
 	if (proxyResponse.getStatus() != HTTPResponse::HTTP_OK)
 		throw HTTPException("Cannot establish proxy connection", proxyResponse.getReason());
-	return proxySession.detachSocket();
+	return proxySession->detachSocket();
 }
 
 
