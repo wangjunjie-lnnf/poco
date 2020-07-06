@@ -146,6 +146,10 @@ void HTTPSClientSession::connect(const SocketAddress& address)
 	if (getProxyHost().empty() || bypassProxy())
 	{
 		SecureStreamSocket sss(socket());
+		if (sss.getPeerHostName().empty()) 
+		{
+			sss.setPeerHostName(getHost());
+		}
 		if (_pContext->sessionCacheEnabled())
 		{
 			sss.useSession(_pSession);
