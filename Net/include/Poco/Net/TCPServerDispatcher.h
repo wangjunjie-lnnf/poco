@@ -17,6 +17,7 @@
 #ifndef Net_TCPServerDispatcher_INCLUDED
 #define Net_TCPServerDispatcher_INCLUDED
 
+#include <atomic>
 
 #include "Poco/Net/Net.h"
 #include "Poco/Net/StreamSocket.h"
