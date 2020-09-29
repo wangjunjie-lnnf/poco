@@ -149,7 +149,7 @@ public:
 		{
 			poco_unexpected();
 		}
-	}
+	} // NOLINT
 
 	SharedPtr& assign(C* ptr)
 	{
