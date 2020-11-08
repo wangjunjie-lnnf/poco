@@ -122,8 +122,6 @@ CipherKeyImpl::Mode CipherKeyImpl::mode() const
 	case EVP_CIPH_GCM_MODE:
 		return MODE_GCM;
 
-	case EVP_CIPH_CCM_MODE:
-		return MODE_CCM;
 #endif
 	}
 	throw Poco::IllegalStateException("Unexpected value of EVP_CIPHER_mode()");
