@@ -179,6 +179,10 @@ public:
 
 	void log(const Message& msg);
 		/// Logs the given message to the file.
+
+    void logInternalError(const std::string& error);
+        /// Logs an error that ocurred during internal log operation such as
+        /// rotation. Remembers the last error text and doesn't log it twice.
 		
 	void setProperty(const std::string& name, const std::string& value);
 		/// Sets the property with the given name. 
@@ -262,6 +266,12 @@ private:
 	ArchiveStrategy* _pArchiveStrategy;
 	PurgeStrategy*   _pPurgeStrategy;
 	FastMutex        _mutex;
+
+    /// We log errors that occur during flush or rotation. To avoid spamming the
+    /// log with the same message, we only log it if it is different from the
+    /// last one. Hopefully it doesn't have timestamps, and we don't have
+    /// serveral interleaving messages.
+    std::string _lastErrorMessage;
 };
 
 

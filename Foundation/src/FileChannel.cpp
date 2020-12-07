@@ -112,6 +112,11 @@ void FileChannel::log(const Message& msg)
 			_pFile = _pArchiveStrategy->archive(_pFile);
 			purge();
 		}
+        catch (Exception & e)
+        {
+            _pFile = new LogFile(_path);
+            logInternalError(e.displayText());
+        }
 		catch (...)
 		{
 			_pFile = new LogFile(_path);
@@ -124,7 +129,7 @@ void FileChannel::log(const Message& msg)
 
 	try
 	{
-	_pFile->write(msg.getText(), _flush);
+        _pFile->write(msg.getText(), _flush);
     }
     catch (const WriteFileException & e)
     {
@@ -139,6 +144,28 @@ void FileChannel::log(const Message& msg)
         {
             PurgeOneFileStrategy().purge(_path);
         }
+    }
+}
+
+
+void FileChannel::logInternalError(const std::string& error)
+{
+    if (error == _lastErrorMessage)
+    {
+        return;
+    }
+
+    _lastErrorMessage = error;
+
+    try
+    {
+        Message msg("Poco::FileChannel",
+            "Poco::FileChannel: Log rotation failed: " + error,
+            Message::PRIO_FATAL);
+        _pFile->write(msg.getText(), false /* flush */);
+    }
+    catch(...)
+    {
     }
 }
 
@@ -373,10 +400,15 @@ void FileChannel::unsafeOpen()
 				_pFile = _pArchiveStrategy->archive(_pFile);
 				purge();
 			}
-			catch (...)
+            catch (Exception & e)
 			{
 				_pFile = new LogFile(_path);
+                logInternalError(e.displayText());
 			}
+            catch (...)
+            {
+                _pFile = new LogFile(_path);
+            }
 		}
 	}
 }
