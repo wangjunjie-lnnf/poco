@@ -338,8 +338,8 @@ int SocketImpl::sendBytes(const void* buffer, int length, int flags)
 
 int SocketImpl::receiveBytes(void* buffer, int length, int flags)
 {
-	bool dont_wait = flags & MSG_DONTWAIT;
-	if (_isBrokenTimeout && !dont_wait)
+	bool blocking = _blocking && (flags & MSG_DONTWAIT) == 0;
+	if (_isBrokenTimeout && blocking)
 	{
 		if (_recvTimeout.totalMicroseconds() != 0)
 		{
@@ -354,11 +354,11 @@ int SocketImpl::receiveBytes(void* buffer, int length, int flags)
 		if (_sockfd == POCO_INVALID_SOCKET) throw InvalidSocketException();
 		rc = ::recv(_sockfd, reinterpret_cast<char*>(buffer), length, flags);
 	}
-	while (_blocking && rc < 0 && lastError() == POCO_EINTR);
+	while (blocking && rc < 0 && lastError() == POCO_EINTR);
 	if (rc < 0) 
 	{
 		int err = lastError();
-		if (err == POCO_EAGAIN && !_blocking)
+		if ((err == POCO_EAGAIN || err == POCO_EWOULDBLOCK) && !blocking)
 			;
 		else if (err == POCO_EAGAIN || err == POCO_ETIMEDOUT)
 			throw TimeoutException(err);
