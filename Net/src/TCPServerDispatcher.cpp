@@ -18,6 +18,7 @@
 #include "Poco/AutoPtr.h"
 #include "Poco/ErrorHandler.h"
 #include <memory>
+#include <iostream>
 
 
 using Poco::Notification;
@@ -146,9 +147,11 @@ void TCPServerDispatcher::enqueue(const StreamSocket& socket)
 				_threadPool.startWithPriority(_pParams->getThreadPriority(), *this, threadName);
 				++_currentThreads;
 			}
-			catch (Poco::Exception&)
+			catch (Poco::Exception& exc)
 			{
 				++_refusedConnections;
+				std::cerr << "Got exception while starting thread for connection. Error code: "
+						  << exc.code() << ", message: '" << exc.displayText() << "'" << std::endl;
 				return;
 			}
 		}
