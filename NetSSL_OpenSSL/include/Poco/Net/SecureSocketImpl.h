@@ -26,7 +26,6 @@
 #include <openssl/bio.h>
 #include <openssl/ssl.h>
 
-#include <atomic>
 #include <mutex>
 
 
@@ -185,6 +184,7 @@ public:
 		
 protected:
 	void acceptSSL();
+		/// Assume per-object mutex is locked.
 		/// Performs a server-side SSL handshake and certificate verification.
 
 	void connectSSL(bool performHandshake);
@@ -230,11 +230,11 @@ private:
 	SecureSocketImpl(const SecureSocketImpl&);
 	SecureSocketImpl& operator = (const SecureSocketImpl&);
 
-	mutable std::mutex _mutex;
+	mutable std::recursive_mutex _mutex;
 	SSL* _pSSL; // GUARDED_BY _mutex
 	Poco::AutoPtr<SocketImpl> _pSocket;
 	Context::Ptr _pContext;
-	std::atomic_bool _needHandshake;
+	bool _needHandshake;
 	std::string _peerHostName;
 	Session::Ptr _pSession;
 	
