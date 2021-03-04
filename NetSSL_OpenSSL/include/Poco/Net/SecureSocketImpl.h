@@ -26,6 +26,8 @@
 #include <openssl/bio.h>
 #include <openssl/ssl.h>
 
+#include <mutex>
+
 
 namespace Poco {
 namespace Net {
@@ -227,7 +229,8 @@ private:
 	SecureSocketImpl(const SecureSocketImpl&);
 	SecureSocketImpl& operator = (const SecureSocketImpl&);
 
-	SSL* _pSSL;
+	mutable std::mutex _mutex;
+	SSL* _pSSL; // GUARDED_BY _mutex
 	Poco::AutoPtr<SocketImpl> _pSocket;
 	Context::Ptr _pContext;
 	bool _needHandshake;
