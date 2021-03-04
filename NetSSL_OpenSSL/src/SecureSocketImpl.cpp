@@ -429,10 +429,9 @@ long SecureSocketImpl::verifyPeerCertificateImpl(const std::string& hostName)
 	else return X509_V_OK;
 }
 
-
+/// This is static method, that's why no lock
 bool SecureSocketImpl::isLocalHost(const std::string& hostName)
 {
-	std::lock_guard<std::recursive_mutex> lock(_mutex);
 	try
 	{
 		SocketAddress addr(hostName, 0);
