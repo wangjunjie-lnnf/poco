@@ -28,7 +28,6 @@
 
 #include <mutex>
 
-
 namespace Poco {
 namespace Net {
 
