@@ -26,6 +26,7 @@
 #include <openssl/bio.h>
 #include <openssl/ssl.h>
 
+#include <atomic>
 #include <mutex>
 
 
@@ -233,7 +234,7 @@ private:
 	SSL* _pSSL; // GUARDED_BY _mutex
 	Poco::AutoPtr<SocketImpl> _pSocket;
 	Context::Ptr _pContext;
-	bool _needHandshake;
+	std::atomic_bool _needHandshake;
 	std::string _peerHostName;
 	Session::Ptr _pSession;
 	
