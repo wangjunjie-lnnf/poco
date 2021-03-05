@@ -26,6 +26,7 @@
 #include <openssl/bio.h>
 #include <openssl/ssl.h>
 
+#include <mutex>
 
 namespace Poco {
 namespace Net {
@@ -182,6 +183,7 @@ public:
 		
 protected:
 	void acceptSSL();
+		/// Assume per-object mutex is locked.
 		/// Performs a server-side SSL handshake and certificate verification.
 
 	void connectSSL(bool performHandshake);
@@ -227,7 +229,8 @@ private:
 	SecureSocketImpl(const SecureSocketImpl&);
 	SecureSocketImpl& operator = (const SecureSocketImpl&);
 
-	SSL* _pSSL;
+	mutable std::recursive_mutex _mutex;
+	SSL* _pSSL; // GUARDED_BY _mutex
 	Poco::AutoPtr<SocketImpl> _pSocket;
 	Context::Ptr _pContext;
 	bool _needHandshake;
