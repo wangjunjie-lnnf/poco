@@ -946,7 +946,11 @@ int SocketImpl::socketError()
 
 void SocketImpl::init(int af)
 {
+#ifdef SOCK_CLOEXEC
 	initSocket(af, SOCK_STREAM|SOCK_CLOEXEC);
+#else
+	initSocket(af, SOCK_STREAM);
+#endif
 }
 
 
