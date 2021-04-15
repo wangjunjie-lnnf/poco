@@ -102,15 +102,20 @@ void TCPServerDispatcher::run()
 		try
 		{
 			AutoPtr<Notification> pNf = _queue.waitDequeueNotification(idleTime);
-			if (pNf)
+			if (pNf && !_stopped)
 			{
 				TCPConnectionNotification* pCNf = dynamic_cast<TCPConnectionNotification*>(pNf.get());
 				if (pCNf)
 				{
-					std::unique_ptr<TCPServerConnection> pConnection(_pConnectionFactory->createConnection(pCNf->socket()));
-					poco_check_ptr(pConnection.get());
 					beginConnection();
-					pConnection->start();
+					if (!_stopped)
+					{
+						std::unique_ptr<TCPServerConnection> pConnection(_pConnectionFactory->createConnection(pCNf->socket()));
+						poco_check_ptr(pConnection.get());
+						pConnection->start();
+					}
+					/// endConnection() should be called after destroying TCPServerConnection,
+					/// otherwise currentConnections() could become zero while some connections are yet still alive.
 					endConnection();
 				}
 			}
