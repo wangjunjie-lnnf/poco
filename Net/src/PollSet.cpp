@@ -34,6 +34,8 @@
 #elif defined(POCO_HAVE_FD_POLL)
 #ifndef _WIN32
 #include <poll.h>
+#elif __sun
+#include <cstring>
 #endif
 #endif
 
