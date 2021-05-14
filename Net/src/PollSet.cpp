@@ -17,6 +17,9 @@
 #include "Poco/Mutex.h"
 #include <set>
 
+#ifdef __sun
+#include <cstring>
+#endif
 
 #if defined(_WIN32) && _WIN32_WINNT >= 0x0600
 #ifndef POCO_HAVE_FD_POLL
@@ -34,8 +37,6 @@
 #elif defined(POCO_HAVE_FD_POLL)
 #ifndef _WIN32
 #include <poll.h>
-#elif __sun
-#include <cstring>
 #endif
 #endif
 
