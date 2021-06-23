@@ -294,13 +294,13 @@ public:
 		/// of the Socket object makes sense. One example is setting
 		/// a socket option before calling bind() on a ServerSocket.
 
+    poco_socket_t sockfd() const;
+        /// Returns the socket descriptor for this socket.
+
 protected:
 	Socket(SocketImpl* pImpl);
 		/// Creates the Socket and attaches the given SocketImpl.
 		/// The socket takes ownership of the SocketImpl.
-
-	poco_socket_t sockfd() const;
-		/// Returns the socket descriptor for this socket.
 
 private:
 

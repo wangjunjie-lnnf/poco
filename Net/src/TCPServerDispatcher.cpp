@@ -18,6 +18,7 @@
 #include "Poco/AutoPtr.h"
 #include "Poco/ErrorHandler.h"
 #include <memory>
+#include <iostream>
 
 
 using Poco::Notification;
@@ -98,29 +99,36 @@ void TCPServerDispatcher::run()
 
 	for (;;)
 	{
+		try
 		{
-			ThreadCountWatcher tcw(this);
-			try
+			AutoPtr<Notification> pNf = _queue.waitDequeueNotification(idleTime);
+			if (pNf && !_stopped)
 			{
-				AutoPtr<Notification> pNf = _queue.waitDequeueNotification(idleTime);
-				if (pNf)
+				TCPConnectionNotification* pCNf = dynamic_cast<TCPConnectionNotification*>(pNf.get());
+				if (pCNf)
 				{
-					TCPConnectionNotification* pCNf = dynamic_cast<TCPConnectionNotification*>(pNf.get());
-					if (pCNf)
+					beginConnection();
+					if (!_stopped)
 					{
 						std::unique_ptr<TCPServerConnection> pConnection(_pConnectionFactory->createConnection(pCNf->socket()));
 						poco_check_ptr(pConnection.get());
-						beginConnection();
 						pConnection->start();
-						endConnection();
 					}
+					/// endConnection() should be called after destroying TCPServerConnection,
+					/// otherwise currentConnections() could become zero while some connections are yet still alive.
+					endConnection();
 				}
 			}
-			catch (Poco::Exception &exc) { ErrorHandler::handle(exc); }
-			catch (std::exception &exc)  { ErrorHandler::handle(exc); }
-			catch (...)                  { ErrorHandler::handle();    }
 		}
-		if (_stopped || (_currentThreads > 1 && _queue.empty())) break;
+		catch (Poco::Exception &exc) { ErrorHandler::handle(exc); }
+		catch (std::exception &exc)  { ErrorHandler::handle(exc); }
+		catch (...)                  { ErrorHandler::handle();    }
+		FastMutex::ScopedLock lock(_mutex);
+		if (_stopped || (_currentThreads > 1 && _queue.empty()))
+		{
+			--_currentThreads;
+			break;
+		}
 	}
 }
 
@@ -144,9 +152,11 @@ void TCPServerDispatcher::enqueue(const StreamSocket& socket)
 				_threadPool.startWithPriority(_pParams->getThreadPriority(), *this, threadName);
 				++_currentThreads;
 			}
-			catch (Poco::Exception&)
+			catch (Poco::Exception& exc)
 			{
 				++_refusedConnections;
+				std::cerr << "Got exception while starting thread for connection. Error code: "
+						  << exc.code() << ", message: '" << exc.displayText() << "'" << std::endl;
 				return;
 			}
 		}
