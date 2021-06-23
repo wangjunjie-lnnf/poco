@@ -41,12 +41,14 @@ bool HTTPServerSession::hasMoreRequests()
 
 	if (_firstRequest)
 	{
+        /// 非keep-alive连接只处理一次请求
 		_firstRequest = false;
 		--_maxKeepAliveRequests;
 		return socket().poll(getTimeout(), Socket::SELECT_READ);
 	}
 	else if (_maxKeepAliveRequests != 0 && getKeepAlive())
 	{
+        /// keep-alive连接可以设置最大处理请求数，默认无限制
 		if (_maxKeepAliveRequests > 0) 
 			--_maxKeepAliveRequests;
 		return buffered() > 0 || socket().poll(_keepAliveTimeout, Socket::SELECT_READ);
